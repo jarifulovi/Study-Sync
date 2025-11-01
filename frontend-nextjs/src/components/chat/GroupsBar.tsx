@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { getInitials } from "@/utils/formatter";
 
 interface GroupsBarProps {
@@ -20,10 +17,9 @@ export default function GroupsBar({
   groups,
   currentGroupId,
 }: GroupsBarProps) {
-  const pathname = usePathname();
 
   return (
-    <div className="flex w-80 flex-col border-r border-gray-200 bg-white">
+    <div className="hidden lg:flex w-80 flex-col border-r border-gray-200 bg-white">
       {/* Header - positioned to avoid sidebar toggle button */}
       <div className="border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 mt-[72px]">
         <h2 className="text-xl font-bold text-white">My Groups</h2>
