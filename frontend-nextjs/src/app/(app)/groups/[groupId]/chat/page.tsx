@@ -1,4 +1,5 @@
 import { groupsBar } from "@/utils/data/groups";
+import { chatMessages } from "@/utils/data/chat";
 import ChatPanel from "@/components/chat/ChatPanel";
 import GroupsBar from "@/components/chat/GroupsBar";
 import { notFound } from "next/navigation";
@@ -18,13 +19,16 @@ export default async function ChatPage({ params }: ChatPageProps) {
     notFound();
   }
 
+  // Filter messages for the current group
+  const groupMessages = chatMessages.filter((msg) => msg.groupId === groupId);
+
   return (
     <div className="fixed inset-0 flex">
       {/* Left Section - Groups Bar */}
       <GroupsBar groups={groupsBar} currentGroupId={groupId} />
       
       {/* Right Section - Chat Panel */}
-      <ChatPanel selectedGroup={selectedGroup} />
+      <ChatPanel selectedGroup={selectedGroup} messages={groupMessages} />
     </div>
   );
 }

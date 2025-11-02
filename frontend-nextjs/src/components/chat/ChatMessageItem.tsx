@@ -155,32 +155,28 @@ export function FileMessage({
   );
 }
 
-interface DiscussionMessageProps {
+interface DiscussionStartNotificationProps {
   senderName: string;
   senderAvatar: string | null;
   discussionTitle: string;
   discussionId: string;
   groupId: string;
   timestamp: string;
-  isOwnMessage?: boolean;
 }
 
-export function DiscussionMessage({
+export function DiscussionStartNotification({
   senderName,
   senderAvatar,
   discussionTitle,
   discussionId,
   groupId,
   timestamp,
-  isOwnMessage = false,
-}: DiscussionMessageProps) {
-
-
+}: DiscussionStartNotificationProps) {
   return (
-    <div className={`flex gap-3 ${isOwnMessage ? "flex-row-reverse" : ""}`}>
+    <div className="flex gap-3">
       {/* Avatar */}
       <div className="flex-shrink-0">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white text-xs font-semibold">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white text-xs font-semibold">
           {senderAvatar ? (
             <img
               src={senderAvatar}
@@ -194,11 +190,11 @@ export function DiscussionMessage({
       </div>
 
       {/* Discussion Content */}
-      <div className={`flex flex-col max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
+      <div className="flex flex-col flex-1 max-w-[85%]">
         <span className="text-xs font-medium text-gray-700 mb-1">
           {senderName}
         </span>
-        <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 p-4 rounded-tl-sm">
+        <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 p-4">
           <div className="flex items-start gap-3 mb-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
               <svg className="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

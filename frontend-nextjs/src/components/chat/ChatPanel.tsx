@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
-import { ChatMessage, chatMessages } from "@/utils/data/chat";
+import { ChatMessage } from "@/utils/data/chat";
 
 interface ChatPanelProps {
   selectedGroup: {
@@ -14,28 +14,19 @@ interface ChatPanelProps {
     lastMessage?: string;
     unreadCount?: number;
   } | null;
+  messages: ChatMessage[];
 }
 
-export default function ChatPanel({ selectedGroup }: ChatPanelProps) {
+export default function ChatPanel({ selectedGroup, messages: initialMessages }: ChatPanelProps) {
   
-  // Take the group id and fetch messages for that group
-  // Fetch upto 30 messages
-  // For now using static data from chatMessages
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  // Messages state management
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [inputMessage, setInputMessage] = useState("");
 
-  // Fetch initial messages
-  // Setup and take messsages from socket in future
-  // Input messages when sent
-  // Pagination on scroll up in future
-
+  // Update messages when initialMessages change
   useEffect(() => {
-    if (selectedGroup) {
-      setMessages(
-        chatMessages.filter((msg) => msg.groupId === selectedGroup?.id)
-      );
-    }
-  }, []);
+    setMessages(initialMessages);
+  }, [initialMessages]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
