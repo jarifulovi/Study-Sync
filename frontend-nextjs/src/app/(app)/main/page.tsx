@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { groups } from "@/utils/data/groups";
 import GroupCard from "@/components/groups/GroupCard";
 import NoGroupsSection from "@/components/groups/NoGroupsSection";
@@ -68,7 +69,9 @@ export default function MainPage() {
       {/* Groups Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {groups && groups.map((group) => (
-          <GroupCard key={group.id} {...group} />
+          <Link key={group.id} href={`/groups/${group.id}/details`}>
+            <GroupCard {...group} />
+          </Link>
         ))}
       </div>
 
