@@ -1,24 +1,26 @@
-"use client";
 
-import { useState } from "react";
+interface ChatInputProps {
+  isAdmin: boolean;
+  inputMessage: string;
+  setInputMessage: (msg: string) => void;
+  onSendMessage: () => void;
+}
 
-export default function ChatInput() {
-  const [message, setMessage] = useState("");
+export default function ChatInput({
+  isAdmin,
+  inputMessage,
+  setInputMessage,
+  onSendMessage,
+}: ChatInputProps) {
 
-  const handleSend = () => {
-    if (message.trim()) {
-      // TODO: Implement send message logic
-      console.log("Sending message:", message);
-      setMessage("");
-    }
-  };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      onSendMessage();
     }
   };
+
 
   return (
     <div className="border-t border-gray-200 bg-white px-6 py-4">
@@ -33,21 +35,33 @@ export default function ChatInput() {
         {/* Message Input */}
         <input
           type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+          onKeyDown={handleKeyPress}
           placeholder="Type a message..."
           className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
         />
 
         {/* Send Button */}
         <button
-          onClick={handleSend}
-          disabled={!message.trim()}
+          onClick={onSendMessage}
+          disabled={!inputMessage.trim()}
           className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2.5 font-medium text-white shadow-lg shadow-blue-600/30 transition-all hover:shadow-xl hover:shadow-blue-600/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           Send
         </button>
+
+        {/* Discussion Button */}
+        {isAdmin && (
+          <button
+            onClick={() => alert("Start Discussion - Feature Coming Soon!")}
+            disabled={!isAdmin}
+            className="rounded-xl bg-gradient-to-r from-purple-700 to-indigo-800 px-5 py-2.5 font-medium text-white shadow-lg shadow-purple-700/30 transition-all hover:shadow-xl hover:shadow-purple-700/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            Discuss
+          </button>
+        )}
+        
       </div>
     </div>
   );
