@@ -1,6 +1,9 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
+import { ChatMessage, chatMessages } from "@/utils/data/chat";
 
 interface ChatPanelProps {
   selectedGroup: {
@@ -14,6 +17,47 @@ interface ChatPanelProps {
 }
 
 export default function ChatPanel({ selectedGroup }: ChatPanelProps) {
+  
+  // Take the group id and fetch messages for that group
+  // Fetch upto 30 messages
+  // For now using static data from chatMessages
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputMessage, setInputMessage] = useState("");
+
+  // Fetch initial messages
+  // Setup and take messsages from socket in future
+  // Input messages when sent
+  // Pagination on scroll up in future
+
+  useEffect(() => {
+    if (selectedGroup) {
+      setMessages(
+        chatMessages.filter((msg) => msg.groupId === selectedGroup?.id)
+      );
+    }
+  }, []);
+
+  const handleSendMessage = () => {
+    if (inputMessage.trim()) {
+      const newMessage: ChatMessage = {
+        id: Date.now().toString(),
+        type: "message",
+        content: inputMessage,
+        senderName: "Current User",
+        senderAvatar: null,
+        sessionId: null,
+        senderId: "user1",
+        timestamp: new Date().toISOString(),
+        groupId: selectedGroup?.id || "",
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setInputMessage("");
+    }
+  };
+
+  
+  
+  
   if (!selectedGroup) {
     return (
       <div className="flex flex-1 flex-col bg-gray-50">
@@ -40,8 +84,15 @@ export default function ChatPanel({ selectedGroup }: ChatPanelProps) {
         groupImage={selectedGroup.image}
         userRole={selectedGroup.role}
       />
-      <ChatMessages groupId={selectedGroup.id} />
-      <ChatInput />
+      <ChatMessages 
+        messages={messages} 
+      />
+      <ChatInput 
+        isAdmin={selectedGroup.role === "admin"}
+        inputMessage={inputMessage}
+        setInputMessage={setInputMessage}
+        onSendMessage={handleSendMessage}
+      />
     </div>
   );
 }

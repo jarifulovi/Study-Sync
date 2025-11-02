@@ -1,4 +1,4 @@
-import { getInitials } from "@/utils/formatter";
+import { getInitials, formatTime } from "@/utils/formatter";
 import Link from "next/link";
 
 interface MessageBubbleProps {
@@ -16,10 +16,7 @@ export function MessageBubble({
   timestamp,
   isOwnMessage = false,
 }: MessageBubbleProps) {
-  const formattedTime = new Date(timestamp).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
 
   return (
     <div className={`flex gap-3 ${isOwnMessage ? "flex-row-reverse" : ""}`}>
@@ -52,7 +49,7 @@ export function MessageBubble({
         >
           <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
         </div>
-        <span className="text-xs text-gray-500 mt-1">{formattedTime}</span>
+        <span className="text-xs text-gray-500 mt-1">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
@@ -64,10 +61,7 @@ interface NotificationMessageProps {
 }
 
 export function NotificationMessage({ content, timestamp }: NotificationMessageProps) {
-  const formattedTime = new Date(timestamp).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
 
   return (
     <div className="flex items-center justify-center my-4">
@@ -77,7 +71,7 @@ export function NotificationMessage({ content, timestamp }: NotificationMessageP
         </svg>
         <span className="text-xs text-gray-600">{content}</span>
         <span className="text-xs text-gray-400">•</span>
-        <span className="text-xs text-gray-400">{formattedTime}</span>
+        <span className="text-xs text-gray-400">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
@@ -102,10 +96,7 @@ export function FileMessage({
   timestamp,
   isOwnMessage = false,
 }: FileMessageProps) {
-  const formattedTime = new Date(timestamp).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
 
   return (
     <div className={`flex gap-3 ${isOwnMessage ? "flex-row-reverse" : ""}`}>
@@ -158,7 +149,7 @@ export function FileMessage({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </a>
-        <span className="text-xs text-gray-500 mt-1">{formattedTime}</span>
+        <span className="text-xs text-gray-500 mt-1">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
@@ -183,10 +174,7 @@ export function DiscussionMessage({
   timestamp,
   isOwnMessage = false,
 }: DiscussionMessageProps) {
-  const formattedTime = new Date(timestamp).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
 
   return (
     <div className={`flex gap-3 ${isOwnMessage ? "flex-row-reverse" : ""}`}>
@@ -223,7 +211,7 @@ export function DiscussionMessage({
             </div>
           </div>
           <Link
-            href={`/groups/${groupId}/discussions/${discussionId}`}
+            href={`/groups/${groupId}/disc/${discussionId}`}
             className="flex items-center justify-center gap-2 w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors"
           >
             <span>Join Discussion</span>
@@ -232,7 +220,7 @@ export function DiscussionMessage({
             </svg>
           </Link>
         </div>
-        <span className="text-xs text-gray-500 mt-1">{formattedTime}</span>
+        <span className="text-xs text-gray-500 mt-1">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
