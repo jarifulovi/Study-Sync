@@ -4,6 +4,9 @@ import GroupCard from "@/components/groups/GroupCard";
 import NoGroupsSection from "@/components/groups/NoGroupsSection";
 
 export default function GroupsPage() {
+
+  // TODO: Fetch all my groups from the backend
+
   return (
     <div className="min-h-screen bg-gray-50 p-6 pt-20 lg:pt-6">
       <div className="mx-auto max-w-7xl">
