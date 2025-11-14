@@ -1,5 +1,5 @@
-import { supabaseService } from "@/backend/lib/supabaseServer";
-import { RegisterInput, ServiceResponse, Profile, Education } from "./types";
+import { supabaseService, supabaseClient } from "@/backend/lib/supabaseServer";
+import { RegisterInput, LoginInput, LoginOutput, ServiceResponse } from "./types";
 
 // This is the core user for backend
 // Will consists all core logic related to backend
@@ -43,4 +43,61 @@ export async function createUserAuth(registerInput: RegisterInput): Promise<Serv
   }
 }
 
+
+export async function loginUser(loginInput: LoginInput): Promise<ServiceResponse<LoginOutput | null>> {
+  try {
+    const { email, password } = loginInput;
+
+    // Sign in using Supabase Auth
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error || !data.user) {
+      return {
+        success: false,
+        error: error?.message || "Invalid credentials",
+        data: null
+      };
+    }
+
+    const user = data.user;
+
+    // Optionally fetch profile
+    const { data: profileData, error: profileError } = await supabaseService
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      return {
+        success: false,
+        error: profileError.message,
+        data: null
+      };
+    }
+
+    // Return standard ServiceResponse
+    return {
+      success: true,
+      message: "Login successful",
+      data: {
+        id: user.id,
+        email: user.email || "",
+        firstName: user.user_metadata?.firstName,
+        lastName: user.user_metadata?.lastName,
+        profile: profileData,
+        session: data.session
+      }
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err.message || "Internal server error",
+      data: null
+    };
+  }
+}
 

@@ -14,6 +14,19 @@ export interface RegisterInput {
   lastName: string;
 };
 
+export interface LoginInput {
+  email: string;
+  password: string;
+};
+
+export interface LoginOutput {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  profile?: Profile; // optional, profile data
+  session?: any;     // Supabase session info
+};
 
 // Profile schema interface
 export interface Profile {
