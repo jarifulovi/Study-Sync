@@ -115,19 +115,19 @@ export default function FileTableRow({ file }: FileTableRowProps) {
       </td>
 
       {/* Type */}
-      <td className="px-6 py-4">
+      <td className="px-6 py-4 hidden sm:table-cell">
         <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
           {getFileTypeLabel(file.mime_type)}
         </span>
       </td>
 
       {/* Size */}
-      <td className="px-6 py-4 text-sm text-gray-600">
+      <td className="px-6 py-4 text-sm text-gray-600 hidden md:table-cell">
         {formatFileSize(file.size)}
       </td>
 
       {/* Uploaded By */}
-      <td className="px-6 py-4">
+      <td className="px-6 py-4 hidden md:table-cell">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-xs font-semibold text-white">
             {file.uploaded_by.image ? (
@@ -145,7 +145,7 @@ export default function FileTableRow({ file }: FileTableRowProps) {
       </td>
 
       {/* Uploaded Date */}
-      <td className="px-6 py-4 text-sm text-gray-600">
+      <td className="px-6 py-4 text-sm text-gray-600 hidden lg:table-cell">
         {getTimeAgo(file.uploaded_at)}
       </td>
 

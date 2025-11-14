@@ -5,6 +5,9 @@ export default function AppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  // TODO: Restrict access to authenticated users only
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
