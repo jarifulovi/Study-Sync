@@ -3,12 +3,14 @@
 // Validate text
 export function isValidText(
   text: string,
-  length: number = 3,
+  minLength: number = 3,
+  maxLength: number = 500,
   allowSpecialChars: boolean = true
 ): boolean {
-  if (!text) return false
-  if (typeof text !== 'string') return false
-  if (text.trim().length < length) return false
+  if (!text) return false;
+  if (typeof text !== 'string') return false;
+  if (text.trim().length < minLength) return false;
+  if (text.trim().length > maxLength) return false;
 
   // Check for special characters if not allowed
   if (!allowSpecialChars) {
