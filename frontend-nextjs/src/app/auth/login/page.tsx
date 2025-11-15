@@ -129,12 +129,12 @@ export default function LoginPage() {
 
             {/* Forgot Password */}
             <div className="flex items-center justify-end">
-              <button
-                type="button"
+              <Link
+                href="/auth/forgot-password"
                 className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-700"
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
 
             {/* General Error Display */}
