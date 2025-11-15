@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { isValidEmail, isValidPassword, isValidText } from "@/utils/validation";
 import { registerUser } from "@/services/apiService";
+import { Input, PasswordInput } from "@/components/ui/Inputs";
+import { AuthSubmitButton } from "@/components/ui/Buttons";
 
 interface FieldErrors {
   firstName?: string;
@@ -23,6 +25,7 @@ export default function RegisterPage() {
   });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Validation function
   const validateForm = (): boolean => {
@@ -64,6 +67,7 @@ export default function RegisterPage() {
       return;
     }
 
+    setIsLoading(true);
     // Submit registration data to backend API
     try {
       const result = await registerUser({
@@ -75,17 +79,18 @@ export default function RegisterPage() {
 
       if (!result.success) {
         setGeneralError(result.error || "Registration failed. Please try again.");
-        return;
+      } else {
+        console.log("Registration successful:", result.data);
+        // Handle successful registration (redirect, etc.)
       }
 
-      console.log("Registration successful:", result.data);
-      // Handle successful registration (redirect, etc.)
     } catch (submissionError) {
       setGeneralError("An error occurred during registration. Please try again.");
     }
+    setIsLoading(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -101,11 +106,6 @@ export default function RegisterPage() {
     }
   };
 
-  // Helper component for field errors
-  const FieldError = ({ error }: { error?: string }) => {
-    if (!error) return null;
-    return <p className="mt-1 text-xs text-red-600">{error}</p>;
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 px-4 py-12">
@@ -122,114 +122,57 @@ export default function RegisterPage() {
         {/* Register Card */}
         <div className="rounded-2xl bg-white p-8 shadow-xl shadow-gray-200/50">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name Field */}
-            <div>
-              <label htmlFor="firstName" className="mb-2 block text-sm font-semibold text-gray-700">
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="John"
-                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
-                  fieldErrors.firstName
-                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
-                }`}
-                required
-              />
-              <FieldError error={fieldErrors.firstName} />
-            </div>
+            {/* Input Field */}
+            <Input
+              label="First Name"
+              name="firstName"
+              type="text"
+              value={formData.firstName}
+              onChange={handleChange}
+              error={fieldErrors.firstName}
+              placeholder="John"
+              title="Enter your first name"
+            />
+            <Input
+              label="Last Name"
+              name="lastName"
+              type="text"
+              value={formData.lastName}
+              onChange={handleChange}
+              error={fieldErrors.lastName}
+              placeholder="Doe"
+              title="Enter your last name"
+            />
+            <Input
+              label="Email Address"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={fieldErrors.email}
+              placeholder="you@example.com"
+              title="Enter your SS email"
+            />
 
-            <div>
-              <label htmlFor="lastName" className="mb-2 block text-sm font-semibold text-gray-700">
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="Doe"
-                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
-                  fieldErrors.lastName
-                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
-                }`}
-                required
-              />
-              <FieldError error={fieldErrors.lastName} />
-            </div>
+            <PasswordInput
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={fieldErrors.password}
+              placeholder="Create a strong password"
+              title="Enter your password"
+            />
 
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-semibold text-gray-700">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
-                  fieldErrors.email
-                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
-                }`}
-                required
-              />
-              <FieldError error={fieldErrors.email} />
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="mb-2 block text-sm font-semibold text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Create a strong password"
-                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
-                  fieldErrors.password
-                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
-                }`}
-                required
-              />
-              <FieldError error={fieldErrors.password} />
-            </div>
-
-            {/* Confirm Password Field */}
-            <div>
-              <label htmlFor="confirmPassword" className="mb-2 block text-sm font-semibold text-gray-700">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Re-enter your password"
-                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
-                  fieldErrors.confirmPassword
-                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
-                }`}
-                required
-              />
-              <FieldError error={fieldErrors.confirmPassword} />
-            </div>
+            <PasswordInput
+              label="Confirm Password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={fieldErrors.confirmPassword}
+              placeholder="Re-enter your password"
+              title="Confirm your password"
+            />
 
             {/* Terms Agreement */}
             <div className="flex items-start gap-3">
@@ -258,13 +201,11 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Submit Button */}
-            <button
+            <AuthSubmitButton
               type="submit"
-              className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 font-semibold text-white shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-600/40 active:scale-[0.98]"
-            >
-              Create Account
-            </button>
+              label="Create Account"
+              isLoading={isLoading}
+            />
           </form>
 
           {/* Divider */}

@@ -2,24 +2,95 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { isValidEmail, isValidPassword } from "@/utils/validation";
+import { loginUser } from "@/services/apiService";
+import { Input, PasswordInput } from "@/components/ui/Inputs";
+import { AuthSubmitButton } from "@/components/ui/Buttons";
+
+
+
+interface FieldErrors {
+  email?: string;
+  password?: string;
+}
+
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Login Data:", formData);
+
+  // Validation function
+  const validateForm = (): boolean => {
+    const errors: FieldErrors = {};
+    
+    if (!isValidEmail(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+    
+    if (!isValidPassword(formData.password)) {
+      errors.password = "Password must be at least 8 characters long and include a number";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Clear previous errors
+    setGeneralError(null);
+    setFieldErrors({});
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    // Submit registration data to backend API
+    try {
+      const result = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log("Login API result:", result);
+      if (!result.success) {
+        console.log("Login failed with error:", result.error);
+        setGeneralError(result.error || "Login failed. Please try again.");
+      } else {
+        console.log("Login successful:", result.data);
+        // Handle successful login (redirect to main)
+        // Store user session and profile data on a context
+      }
+
+    } catch (submissionError) {
+      setGeneralError("An error occurred during login. Please try again.");
+    }
+    setIsLoading(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name as keyof FieldErrors]) {
+      setFieldErrors({
+        ...fieldErrors,
+        [name]: undefined,
+      });
+    }
   };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 px-4 py-12">
@@ -37,38 +108,24 @@ export default function LoginPage() {
         <div className="rounded-2xl bg-white p-8 shadow-xl shadow-gray-200/50">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-semibold text-gray-700">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
-                required
-              />
-            </div>
+            <Input
+              label="Email Address"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={fieldErrors.email}
+              placeholder="you@example.com"
+              title="Enter you SS email"
+            />
 
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="mb-2 block text-sm font-semibold text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
-                required
-              />
-            </div>
+            <PasswordInput
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              error={fieldErrors.password}
+            />
 
             {/* Forgot Password */}
             <div className="flex items-center justify-end">
@@ -80,13 +137,18 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Submit Button */}
-            <button
+            {/* General Error Display */}
+            {generalError && (
+              <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+                <p className="text-sm text-red-600">{generalError}</p>
+              </div>
+            )}
+
+            <AuthSubmitButton
               type="submit"
-              className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 font-semibold text-white shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-600/40 active:scale-[0.98]"
-            >
-              Sign In
-            </button>
+              label="Sign In"
+              isLoading={isLoading}
+            />
           </form>
 
           {/* Divider */}
