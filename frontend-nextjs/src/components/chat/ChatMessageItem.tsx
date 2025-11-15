@@ -36,7 +36,7 @@ export function MessageBubble({
       </div>
 
       {/* Message Content */}
-      <div className={`flex flex-col max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
+      <div className={`flex flex-col max-w-[85%] sm:max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
         <span className="text-xs font-medium text-gray-700 mb-1">
           {senderName}
         </span>
@@ -116,7 +116,7 @@ export function FileMessage({
       </div>
 
       {/* File Content */}
-      <div className={`flex flex-col max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
+      <div className={`flex flex-col max-w-[85%] sm:max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
         <span className="text-xs font-medium text-gray-700 mb-1">
           {senderName}
         </span>

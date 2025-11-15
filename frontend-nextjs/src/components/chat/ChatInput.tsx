@@ -23,8 +23,8 @@ export default function ChatInput({
 
 
   return (
-    <div className="border-t border-gray-200 bg-white px-6 py-4">
-      <div className="flex items-center gap-3">
+    <div className="border-t border-gray-200 bg-white px-3 sm:px-6 py-4">
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Attachment Button */}
         <button className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600">
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,9 +46,12 @@ export default function ChatInput({
         <button
           onClick={onSendMessage}
           disabled={!inputMessage.trim()}
-          className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2.5 font-medium text-white shadow-lg shadow-blue-600/30 transition-all hover:shadow-xl hover:shadow-blue-600/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          className="hidden md:block rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-3 sm:px-5 py-2.5 font-medium text-white shadow-lg shadow-blue-600/30 transition-all hover:shadow-xl hover:shadow-blue-600/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm whitespace-nowrap"
+          title="Send message"
         >
-          Send
+          <svg className="h-5 w-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
         </button>
 
         {/* Discussion Button */}
@@ -56,9 +59,12 @@ export default function ChatInput({
           <button
             onClick={() => alert("Start Discussion - Feature Coming Soon!")}
             disabled={!isAdmin}
-            className="rounded-xl bg-gradient-to-r from-purple-700 to-indigo-800 px-5 py-2.5 font-medium text-white shadow-lg shadow-purple-700/30 transition-all hover:shadow-xl hover:shadow-purple-700/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="rounded-xl bg-gradient-to-r from-purple-700 to-indigo-800 px-3 sm:px-5 py-2.5 font-medium text-white shadow-lg shadow-purple-700/30 transition-all hover:shadow-xl hover:shadow-purple-700/40 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-sm whitespace-nowrap"
+            title="Start a discussion"
           >
-            Discuss
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
           </button>
         )}
         

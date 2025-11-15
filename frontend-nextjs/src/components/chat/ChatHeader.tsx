@@ -28,8 +28,8 @@ export default function ChatHeader({ groupId, groupName, groupImage, userRole }:
           </svg>
         </Link>
         
-        {/* Group Avatar */}
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold text-sm shadow-md">
+        {/* Group Avatar hidden in mobile */}
+        <div className="hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold text-sm shadow-md">
           {groupImage ? (
             <img
               src={groupImage}
