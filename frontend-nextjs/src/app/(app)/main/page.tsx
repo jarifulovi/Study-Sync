@@ -6,6 +6,7 @@ import { groups } from "@/utils/data/groups";
 import GroupCard from "@/components/groups/GroupCard";
 import NoGroupsSection from "@/components/groups/NoGroupsSection";
 import SearchBar from "@/components/search/SearchBar";
+import PageHeader from "@/components/ui/PageHeader";
 
 export default function MainPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,12 +21,8 @@ export default function MainPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      {/* Header Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Discover Study Groups</h1>
-        <p className="text-muted-foreground">Find and join groups that match your interests</p>
-      </div>
+    <div className="mx-auto max-w-7xl  p-6 pt-20 lg:pt-6">
+      <PageHeader title="Discover Study Groups" subtitle="Find and join groups that match your interests" />
 
       {/* Search and Filter Section */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row">

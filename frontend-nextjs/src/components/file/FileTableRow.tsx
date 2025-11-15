@@ -1,18 +1,12 @@
 import { File } from "@/utils/data/files";
+import { getInitials } from "@/utils/formatter";
 
 interface FileTableRowProps {
   file: File;
 }
 
 export default function FileTableRow({ file }: FileTableRowProps) {
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+
 
   const getFileIcon = (mimeType: string) => {
     if (mimeType.startsWith("image/")) {
@@ -103,10 +97,16 @@ export default function FileTableRow({ file }: FileTableRowProps) {
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex-shrink-0">{getFileIcon(file.mime_type)}</div>
+
           <div className="min-w-0 flex-1">
             <button
               onClick={() => window.open(file.url, "_blank")}
-              className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors text-left truncate block max-w-xs"
+              title={file.name} // tooltip for full name
+              className="
+                text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors text-left 
+                truncate block 
+                max-w-[120px] sm:max-w-[180px] md:max-w-[260px] lg:max-w-[320px]
+              "
             >
               {file.name}
             </button>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PageHeaderWithBackButton } from "@/components/ui/PageHeader";
 
 const GROUP_TYPES = [
   "Study Group",
@@ -77,23 +78,7 @@ export default function CreateGroupPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 pt-20 lg:pt-6">
       <div className="mx-auto max-w-4xl">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Link
-              href="/groups"
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 hover:text-blue-600"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-            </Link>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Create New Group</h1>
-              <p className="text-gray-600 mt-1">Set up a new study group to collaborate with others</p>
-            </div>
-          </div>
-        </div>
+        <PageHeaderWithBackButton title="Create New Group" subtitle="Set up a new study group to collaborate with others" />
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-8">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { groups } from "@/utils/data/groups";
 import GroupFolderCard from "@/components/file/GroupFolderCard";
+import PageHeader from "@/components/ui/PageHeader";
 
 export default function FilesPage() {
   return (
@@ -8,12 +9,7 @@ export default function FilesPage() {
       <div className="mx-auto max-w-7xl">
         {/* Header Section */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="text-center sm:text-left">
-            <h1 className="text-3xl font-bold text-gray-900">File Repository</h1>
-            <p className="mt-2 text-gray-600">
-              Organize and access your study materials by group
-            </p>
-          </div>
+          <PageHeader title="File Repository" subtitle="Organize and access your study materials by groups" />
           
           {/* Upload Button - Mobile: Below header, Desktop: Right side */}
           <button className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-6 py-3 font-medium text-white shadow-lg shadow-green-600/30 transition-all hover:shadow-xl hover:shadow-green-600/40 hover:scale-105 active:scale-95 whitespace-nowrap">

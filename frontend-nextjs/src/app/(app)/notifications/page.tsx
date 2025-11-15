@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { notifications as initialNotifications } from "@/utils/data/notifications";
 import NotificationBar from "@/components/notification/NotificationBar";
+import PageHeader from "@/components/ui/PageHeader";
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState(initialNotifications);
@@ -28,13 +29,9 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 pt-20 lg:pt-6">
       <div className="mx-auto max-w-4xl">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">Notifications</h1>
-          <p className="text-sm text-gray-600">Stay updated with your group activities</p>
-        </div>
+        <PageHeader title="Notifications" subtitle="Stay updated with your group activities" />
 
         {/* Filter Bar */}
         <div className="mb-6 flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">

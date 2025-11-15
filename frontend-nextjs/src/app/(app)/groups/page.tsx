@@ -2,6 +2,8 @@ import Link from "next/link";
 import { groups } from "@/utils/data/groups";
 import GroupCard from "@/components/groups/GroupCard";
 import NoGroupsSection from "@/components/groups/NoGroupsSection";
+import Page from "@/app/page";
+import PageHeader from "@/components/ui/PageHeader";
 
 export default function GroupsPage() {
 
@@ -12,12 +14,7 @@ export default function GroupsPage() {
       <div className="mx-auto max-w-7xl">
         {/* Header Section with Create Button */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="text-center sm:text-left">
-            <h1 className="text-3xl font-bold text-gray-900">My Groups</h1>
-            <p className="mt-2 text-gray-600">
-              Manage and interact with your study groups
-            </p>
-          </div>
+          <PageHeader title="My Groups" subtitle="Manage and interact with your study groups" />
           
           {/* Create Group Button */}
           <Link
