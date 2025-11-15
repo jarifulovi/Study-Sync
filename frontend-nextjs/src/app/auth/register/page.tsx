@@ -2,25 +2,109 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { isValidEmail, isValidPassword, isValidText } from "@/utils/validation";
+import { registerUser } from "@/services/apiService";
+
+interface FieldErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Validation function
+  const validateForm = (): boolean => {
+    const errors: FieldErrors = {};
+    
+    if (!isValidText(formData.firstName, 3, 50, false)) {
+      errors.firstName = "First name must be 3-50 characters, no special characters";
+    }
+    
+    if (!isValidText(formData.lastName, 3, 50, false)) {
+      errors.lastName = "Last name must be 3-50 characters, no special characters";
+    }
+    
+    if (!isValidEmail(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+    
+    if (!isValidPassword(formData.password)) {
+      errors.password = "Password must be at least 8 characters long and include a number";
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Register Data:", formData);
+    
+    // Clear previous errors
+    setGeneralError(null);
+    setFieldErrors({});
+    
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    // Submit registration data to backend API
+    try {
+      const result = await registerUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (!result.success) {
+        setGeneralError(result.error || "Registration failed. Please try again.");
+        return;
+      }
+
+      console.log("Registration successful:", result.data);
+      // Handle successful registration (redirect, etc.)
+    } catch (submissionError) {
+      setGeneralError("An error occurred during registration. Please try again.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name as keyof FieldErrors]) {
+      setFieldErrors({
+        ...fieldErrors,
+        [name]: undefined,
+      });
+    }
+  };
+
+  // Helper component for field errors
+  const FieldError = ({ error }: { error?: string }) => {
+    if (!error) return null;
+    return <p className="mt-1 text-xs text-red-600">{error}</p>;
   };
 
   return (
@@ -40,19 +124,45 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="mb-2 block text-sm font-semibold text-gray-700">
-                Full Name
+              <label htmlFor="firstName" className="mb-2 block text-sm font-semibold text-gray-700">
+                First Name
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleChange}
-                placeholder="John Doe"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                placeholder="John"
+                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+                  fieldErrors.firstName
+                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                }`}
                 required
               />
+              <FieldError error={fieldErrors.firstName} />
+            </div>
+
+            <div>
+              <label htmlFor="lastName" className="mb-2 block text-sm font-semibold text-gray-700">
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Doe"
+                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+                  fieldErrors.lastName
+                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                }`}
+                required
+              />
+              <FieldError error={fieldErrors.lastName} />
             </div>
 
             {/* Email Field */}
@@ -67,9 +177,14 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+                  fieldErrors.email
+                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                }`}
                 required
               />
+              <FieldError error={fieldErrors.email} />
             </div>
 
             {/* Password Field */}
@@ -84,9 +199,14 @@ export default function RegisterPage() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Create a strong password"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+                  fieldErrors.password
+                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                }`}
                 required
               />
+              <FieldError error={fieldErrors.password} />
             </div>
 
             {/* Confirm Password Field */}
@@ -101,9 +221,14 @@ export default function RegisterPage() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Re-enter your password"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+                className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+                  fieldErrors.confirmPassword
+                    ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                }`}
                 required
               />
+              <FieldError error={fieldErrors.confirmPassword} />
             </div>
 
             {/* Terms Agreement */}
@@ -125,6 +250,13 @@ export default function RegisterPage() {
                 </button>
               </label>
             </div>
+
+            {/* General Error Display */}
+            {generalError && (
+              <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+                <p className="text-sm text-red-600">{generalError}</p>
+              </div>
+            )}
 
             {/* Submit Button */}
             <button
