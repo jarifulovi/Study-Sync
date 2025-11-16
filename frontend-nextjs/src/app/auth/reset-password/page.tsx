@@ -75,22 +75,36 @@ export default function ResetPasswordPage() {
     }
 
     setIsLoading(true);
-    // Submit registration data to backend API
+    // Submit password reset to backend API
     try {
-      const result = { success: true, error : null, data: null }; // Placeholder for actual API call
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          accessToken: accessToken,
+          newPassword: formData.password 
+        }),
+      });
 
-      if (!result.success) {
-        setGeneralError(result.error || "Reset password failed. Please try again.");
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        setGeneralError(result.error || "Password reset failed. Please try again.");
       } else {
-        console.log("Reset password successful with token: ", accessToken);
-        // Show confirmation toast
+        console.log("Password reset successful");
+        setGeneralError(null);
+        // Show success message and redirect to login
+        alert("Password reset successfully! You can now login with your new password.");
+        window.location.href = '/auth/login';
       }
 
     } catch (submissionError) {
-      setGeneralError("An error occurred during reset password process. Please try again.");
+      setGeneralError("An error occurred during password reset. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    setTimeout(() => setIsLoading(false), 1000); // Simulate network delay
-    // setIsLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -152,7 +166,7 @@ export default function ResetPasswordPage() {
 
             <AuthSubmitButton
               type="submit"
-              label="Send Reset Link"
+              label="Reset Password"
               isLoading={isLoading}
             />
           </form>

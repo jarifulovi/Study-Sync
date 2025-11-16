@@ -43,21 +43,32 @@ export default function ForgotPasswordPage() {
     }
 
     setIsLoading(true);
-    // Submit registration data to backend API
+    // Submit forgot password request to backend API
     try {
-      const result = { success: true, error: null, data: null }; // Placeholder for actual API call
-      if (!result.success) {
-        setGeneralError(result.error || "Forgot password process failed. Please try again.");
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        setGeneralError(result.error || "Failed to send password reset email. Please try again.");
       } else {
-        console.log("Forgot password process successful:");
-        // Show confirmation toast
+        console.log("Password reset email sent successfully");
+        setGeneralError(null);
+        // Show success message
+        alert("Password reset email sent! Please check your inbox.");
       }
 
     } catch (submissionError) {
       setGeneralError("An error occurred during forgot password process. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    setTimeout(() => setIsLoading(false), 1000); // Simulate network delay
-    // setIsLoading(false);
   };
 
 

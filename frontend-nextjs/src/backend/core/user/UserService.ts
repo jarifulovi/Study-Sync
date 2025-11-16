@@ -101,3 +101,75 @@ export async function loginUser(loginInput: LoginInput): Promise<ServiceResponse
   }
 }
 
+export async function forgotPassword(email: string): Promise<ServiceResponse<null>> {
+  try {
+    // Send password reset email using Supabase Auth
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`,
+    });
+
+    if (error) {
+      return {
+        success: false,
+        error: error.message || "Failed to send password reset email",
+        data: null
+      };
+    }
+
+    return {
+      success: true,
+      message: "Password reset email sent successfully",
+      data: null
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err.message || "Internal server error",
+      data: null
+    };
+  }
+}
+
+export async function resetPassword(accessToken: string, newPassword: string): Promise<ServiceResponse<null>> {
+  try {
+    // First, verify the recovery token and establish a session
+    const { data: sessionData, error: sessionError } = await supabaseClient.auth.setSession({
+      access_token: accessToken,
+      refresh_token: '', // Not needed for recovery tokens
+    });
+
+    if (sessionError || !sessionData.session) {
+      return {
+        success: false,
+        error: sessionError?.message || "Invalid or expired recovery token",
+        data: null
+      };
+    }
+
+    // Now update the user's password
+    const { error: updateError } = await supabaseClient.auth.updateUser({
+      password: newPassword
+    });
+
+    if (updateError) {
+      return {
+        success: false,
+        error: updateError.message || "Failed to update password",
+        data: null
+      };
+    }
+
+    return {
+      success: true,
+      message: "Password reset successfully",
+      data: null
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err.message || "Internal server error",
+      data: null
+    };
+  }
+}
+
