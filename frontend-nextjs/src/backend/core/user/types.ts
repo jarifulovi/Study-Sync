@@ -28,6 +28,16 @@ export interface LoginOutput {
   session?: any;     // Supabase session info
 };
 
+export interface ForgotPasswordInput {
+  email: string;
+};
+
+export interface ResetPasswordInput {
+  access_token: string;
+  password: string;
+};
+
+
 // Profile schema interface
 export interface Profile {
   id: string;

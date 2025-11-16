@@ -10,13 +10,13 @@ export async function POST(request: NextRequest) {
     const { email, password } = body;
 
     // Validate required fields
-    if (!isValidEmail(email)) return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
-    if (!isValidPassword(password)) return NextResponse.json({ error: 'Password too weak' }, { status: 400 });
+    if (!isValidEmail(email)) return NextResponse.json({ success: false, error: 'Invalid email' }, { status: 400 });
+    if (!isValidPassword(password)) return NextResponse.json({ success: false, error: 'Password too weak' }, { status: 400 });
 
 
     const loginResult = await loginUser(body);
     if (!loginResult.success) {
-      return NextResponse.json({ error: loginResult.error}, { status: 500 });
+      return NextResponse.json({ success: false, error: loginResult.error}, { status: 500 });
     }
 
     return NextResponse.json({
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     );
   }

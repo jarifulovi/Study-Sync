@@ -14,30 +14,30 @@ export async function POST(request: NextRequest) {
     const { email, password, firstName, lastName } = body;
 
     // Validate required fields
-    if (!isValidEmail(email)) return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
-    if (!isValidPassword(password)) return NextResponse.json({ error: 'Password too weak' }, { status: 400 })
-    if (!isValidText(firstName,3,50,false)) return NextResponse.json({ error: 'Invalid first name' }, { status: 400 })
-    if (!isValidText(lastName,3,50,false)) return NextResponse.json({ error: 'Invalid last name' }, { status: 400 })
+    if (!isValidEmail(email)) return NextResponse.json({ success: false, error: 'Invalid email' }, { status: 400 })
+    if (!isValidPassword(password)) return NextResponse.json({ success: false,  error: 'Password too weak' }, { status: 400 })
+    if (!isValidText(firstName,3,50,false)) return NextResponse.json({ success: false,  error: 'Invalid first name' }, { status: 400 })
+    if (!isValidText(lastName,3,50,false)) return NextResponse.json({ success: false,  error: 'Invalid last name' }, { status: 400 })
 
     // Check if user already exists
     const userExistsResult = await doesUserExists(email);
     if (!userExistsResult.success) {
-      return NextResponse.json({ error: userExistsResult.error }, { status: 500 });
+      return NextResponse.json({ success: false, error: userExistsResult.error }, { status: 500 });
     }
     if (userExistsResult.data) {
-      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'User already exists' }, { status: 400 });
     }
 
     // Create user in Supabase Auth
     const authResult = await createUserAuth(body);
     if (!authResult.success) {
-      return NextResponse.json({ error: authResult.error }, { status: 400 });
+      return NextResponse.json({ success: false, error: authResult.error }, { status: 400 });
     }
 
     // Create user profile
     const profileResult = await createUserProfile(body, authResult.data.user.id);
     if (!profileResult.success) {
-      return NextResponse.json({ error: profileResult.error }, { status: 500 });
+      return NextResponse.json({ success: false, error: profileResult.error }, { status: 500 });
     }
 
     return NextResponse.json({
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Registration error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
