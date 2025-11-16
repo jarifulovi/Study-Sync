@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { isValidPassword } from "@/utils/validation";
 import { PasswordInput } from "@/components/ui/Inputs";
 import { AuthSubmitButton } from "@/components/ui/Buttons";
-import { useSearchParams } from "next/dist/client/components/navigation";
 
 
 interface FieldErrors {
@@ -21,9 +20,35 @@ export default function ResetPasswordPage() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
-  const searchParams = useSearchParams();
-  const accessToken = searchParams.get('access_token');
+  // Extract tokens from URL hash fragment (Supabase sends tokens in URL hash)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const access = hashParams.get('access_token');
+      const refresh = hashParams.get('refresh_token');
+      
+      if (access) {
+        setAccessToken(access);
+        setRefreshToken(refresh || '');
+      }
+    }
+  }, []);
+
+  if (accessToken === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="rounded-2xl bg-white p-8 shadow-xl shadow-gray-200/50">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
+            <p className="text-gray-600">Please wait while we verify your reset link.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!accessToken) {
     return (
@@ -75,22 +100,37 @@ export default function ResetPasswordPage() {
     }
 
     setIsLoading(true);
-    // Submit registration data to backend API
+    // Submit password reset to backend API
     try {
-      const result = { success: true, error : null, data: null }; // Placeholder for actual API call
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          newPassword: formData.password 
+        }),
+      });
 
-      if (!result.success) {
-        setGeneralError(result.error || "Reset password failed. Please try again.");
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        setGeneralError(result.error || "Password reset failed. Please try again.");
       } else {
-        console.log("Reset password successful with token: ", accessToken);
-        // Show confirmation toast
+        console.log("Password reset successful");
+        setGeneralError(null);
+        // Show success message and redirect to login
+        alert("Password reset successfully! You can now login with your new password.");
+        window.location.href = '/auth/login';
       }
 
     } catch (submissionError) {
-      setGeneralError("An error occurred during reset password process. Please try again.");
+      setGeneralError("An error occurred during password reset. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    setTimeout(() => setIsLoading(false), 1000); // Simulate network delay
-    // setIsLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -152,7 +192,7 @@ export default function ResetPasswordPage() {
 
             <AuthSubmitButton
               type="submit"
-              label="Send Reset Link"
+              label="Reset Password"
               isLoading={isLoading}
             />
           </form>
