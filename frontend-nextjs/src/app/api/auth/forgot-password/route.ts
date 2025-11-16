@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { isValidEmail } from '@/backend/core/shared/validation'
 import { forgotPassword } from '@/backend/core/user/UserService';
 
-
+/**
+ * API route handler for initiating password reset process
+ * Sends a password reset email with a recovery token to the user
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
