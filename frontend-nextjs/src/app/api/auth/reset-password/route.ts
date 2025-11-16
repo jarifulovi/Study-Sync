@@ -10,7 +10,7 @@ import { resetPassword } from '@/backend/core/user/UserService';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { accessToken, newPassword } = body;
+    const { accessToken, refreshToken, newPassword } = body;
 
     // Validate required fields
     if (!accessToken) {
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Password must be at least 8 characters and include a number' }, { status: 400 });
     }
 
-    const result = await resetPassword(accessToken, newPassword);
+    const result = await resetPassword(accessToken, refreshToken || '', newPassword);
     
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 500 });

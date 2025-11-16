@@ -130,12 +130,12 @@ export async function forgotPassword(email: string): Promise<ServiceResponse<nul
   }
 }
 
-export async function resetPassword(accessToken: string, newPassword: string): Promise<ServiceResponse<null>> {
+export async function resetPassword(accessToken: string, refreshToken: string, newPassword: string): Promise<ServiceResponse<null>> {
   try {
     // First, verify the recovery token and establish a session
     const { data: sessionData, error: sessionError } = await supabaseClient.auth.setSession({
       access_token: accessToken,
-      refresh_token: '', // Not needed for recovery tokens
+      refresh_token: refreshToken,
     });
 
     if (sessionError || !sessionData.session) {
