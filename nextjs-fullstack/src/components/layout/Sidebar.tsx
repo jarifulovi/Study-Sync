@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import ProfileSection from "../ui/ProfileSection";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -101,6 +102,11 @@ export default function Sidebar() {
     return pathname === href || pathname?.startsWith(href + "/");
   };
 
+  const handleLogOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href="/";
+  }
+
   return (
     <>
       {/* Toggle Button - Only hamburger menu */}
@@ -173,7 +179,7 @@ export default function Sidebar() {
         {/* Bottom Section - Logout (only if logged in) */}
         {isLoggedIn && (
           <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200/80 bg-white/80 backdrop-blur-sm p-4">
-            <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 font-medium text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600 hover:shadow-md hover:scale-[1.02] active:scale-100 group">
+            <button onClick={handleLogOut} className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 font-medium text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600 hover:shadow-md hover:scale-[1.02] active:scale-100 group">
               <svg className="h-5 w-5 text-gray-500 transition-all group-hover:text-red-600 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>

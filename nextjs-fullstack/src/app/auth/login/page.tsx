@@ -6,6 +6,8 @@ import { isValidEmail, isValidPassword } from "@/utils/validation";
 import { loginUser } from "@/services/apiService";
 import { Input, PasswordInput } from "@/components/ui/Inputs";
 import { AuthSubmitButton } from "@/components/ui/Buttons";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 
 
@@ -23,7 +25,7 @@ export default function LoginPage() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
 
   // Validation function
   const validateForm = (): boolean => {
@@ -59,14 +61,27 @@ export default function LoginPage() {
         email: formData.email,
         password: formData.password,
       });
-      console.log("Login API result:", result);
+
       if (!result.success) {
         console.log("Login failed with error:", result.error);
         setGeneralError(result.error || "Login failed. Please try again.");
       } else {
         console.log("Login successful:", result.data);
-        // Handle successful login (redirect to main)
+        const { access_token, refresh_token } = result.data.data.session;
+        // console.log('Access Token:', access_token);
+        // console.log('Refresh Token:', refresh_token);
+        if (!access_token || !refresh_token) {
+          setGeneralError("Invalid session data received. Please try logging in again.");
+          setIsLoading(false);
+          return;
+        }
+
+        await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
         // Store user session and profile data on a context
+        router.push("/main");
       }
 
     } catch (submissionError) {

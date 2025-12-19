@@ -1,5 +1,5 @@
 {
-  "name": "frontend-nextjs",
+  "name": "nextjs-fullstack",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.81.1",
     "next": "16.0.0",
     "react": "19.2.0",
