@@ -39,15 +39,15 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
   const getIconColor = (type: string) => {
     switch (type) {
       case "message":
-        return "bg-blue-100 text-blue-600";
+        return "bg-slate-100 text-slate-700";
       case "file_upload":
-        return "bg-gray-100 text-gray-600";
+        return "bg-slate-100 text-slate-600";
       case "group_join":
-        return "bg-blue-100 text-blue-600";
+        return "bg-slate-100 text-slate-700";
       case "discussion_start":
-        return "bg-blue-100 text-blue-600";
+        return "bg-slate-100 text-slate-700";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-slate-100 text-slate-600";
     }
   };
 
@@ -64,14 +64,14 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+    <div className="bg-white rounded-xl shadow-sm">
+      <div className="px-6 py-4">
+        <h3 className="text-lg font-semibold text-slate-900">Recent Activity</h3>
       </div>
       
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-slate-100">
         {activities.map((activity) => (
-          <div key={activity.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+          <div key={activity.id} className="px-6 py-4 hover:bg-slate-50 transition-colors">
             <div className="flex items-start gap-4">
               {/* Icon */}
               <div className={`p-2 rounded-lg flex-shrink-0 ${getIconColor(activity.type)}`}>
@@ -80,20 +80,20 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
               
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 line-clamp-1">
+                <p className="text-sm font-medium text-slate-900 line-clamp-1">
                   {activity.title}
                 </p>
-                <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                <p className="text-sm text-slate-600 line-clamp-2 mt-1">
                   {activity.description}
                 </p>
                 
                 <div className="flex items-center gap-4 mt-2">
                   {activity.groupName && (
-                    <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                    <span className="text-xs text-slate-700 bg-slate-100 px-2 py-1 rounded-full">
                       {activity.groupName}
                     </span>
                   )}
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-slate-500">
                     {getTimeAgo(activity.timestamp)}
                   </span>
                 </div>
@@ -104,8 +104,8 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
       </div>
       
       {/* View All Button */}
-      <div className="px-6 py-4 border-t border-gray-200">
-        <button className="w-full text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+      <div className="px-6 py-4">
+        <button className="w-full text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors">
           View All Activity
         </button>
       </div>

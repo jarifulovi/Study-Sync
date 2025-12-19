@@ -22,16 +22,9 @@ export default function SearchBar({
 
   return (
     <div className="relative flex-1">
-      {/* Blue line indicator when focused */}
-      <div
-        className={`absolute left-0 top-0 h-full w-1 rounded-l-xl bg-blue-600 transition-opacity duration-200 ${
-          isFocused ? "opacity-100" : "opacity-0"
-        }`}
-      />
-      
       <svg
         className={`absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors duration-200 ${
-          isFocused ? "text-blue-600" : "text-gray-400"
+          isFocused ? "text-slate-700" : "text-slate-400"
         }`}
         fill="none"
         stroke="currentColor"
@@ -52,10 +45,10 @@ export default function SearchBar({
         onChange={handleChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className={`w-full rounded-xl border bg-white py-3 pl-12 pr-4 text-sm outline-none transition-all duration-200 ${
+        className={`w-full rounded-lg border bg-white py-3 pl-12 pr-4 text-sm outline-none transition-all duration-200 ${
           isFocused
-            ? "border-blue-500 shadow-lg shadow-blue-500/10 ring-2 ring-blue-500/20"
-            : "border-gray-200 hover:border-gray-300"
+            ? "border-slate-400 shadow-lg ring-2 ring-slate-200"
+            : "border-slate-200 hover:border-slate-300"
         }`}
       />
     </div>

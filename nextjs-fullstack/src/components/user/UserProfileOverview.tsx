@@ -40,7 +40,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="bg-white rounded-xl shadow-sm">
       <div className="p-6">
         {/* Profile Header */}
         <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
@@ -53,7 +53,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white font-bold text-xl">
                 {getInitials(user.name)}
               </div>
             )}
@@ -63,11 +63,11 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
-                <p className="text-lg text-gray-600">{user.major} • {user.year}</p>
-                <p className="text-sm text-gray-500">{user.university}</p>
+                <h2 className="text-2xl font-bold text-slate-900">{user.name}</h2>
+                <p className="text-lg text-slate-600">{user.major} • {user.year}</p>
+                <p className="text-sm text-slate-500">{user.university}</p>
                 {user.currentJob && (
-                  <p className="text-sm text-blue-600 font-medium mt-1">{user.currentJob}</p>
+                  <p className="text-sm text-slate-700 font-medium mt-1">{user.currentJob}</p>
                 )}
               </div>
               
@@ -78,7 +78,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
                     href={user.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                    className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all"
                   >
                     {getSocialIcon("linkedin")}
                   </a>
@@ -88,7 +88,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
                     href={user.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+                    className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
                   >
                     {getSocialIcon("github")}
                   </a>
@@ -98,7 +98,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
                     href={user.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                    className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all"
                   >
                     {getSocialIcon("website")}
                   </a>
@@ -107,7 +107,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
             </div>
             
             {/* Additional Info */}
-            <div className="flex flex-wrap gap-4 mt-4 text-sm text-gray-600">
+            <div className="flex flex-wrap gap-4 mt-4 text-sm text-slate-600">
               <div className="flex items-center gap-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -133,7 +133,7 @@ export default function UserProfileOverview({ user }: UserProfileOverviewProps) 
             
             {/* Bio */}
             {user.bio && (
-              <p className="text-gray-700 mt-4 leading-relaxed">
+              <p className="text-slate-700 mt-4 leading-relaxed">
                 {user.bio}
               </p>
             )}

@@ -1,16 +1,14 @@
-
-
-
-
 import { currentUser, userStats, recentActivity, quickActions } from "@/utils/data/user";
 import UserProfileOverview from "@/components/user/UserProfileOverview";
 import StatsCard from "@/components/user/StatsCard";
 import ActivityFeed from "@/components/user/ActivityFeed";
 import QuickActions from "@/components/user/QuickActions";
 
+
+
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50 p-6 pt-20 lg:pt-6">
+    <div className="min-h-screen p-6 pt-20 lg:pt-6">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* User Profile Overview */}
         <UserProfileOverview user={currentUser} />

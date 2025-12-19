@@ -37,22 +37,17 @@ export default function StatsCard({ stat }: StatsCardProps) {
   };
 
   const getColorClasses = (color: string) => {
-    switch (color) {
-      case "blue":
-        return "bg-blue-600 text-white";
-      default:
-        return "bg-blue-600 text-white";
-    }
+    return "bg-slate-700 text-white";
   };
 
   const getChangeColor = (changeType: string) => {
     switch (changeType) {
       case "increase":
-        return "text-green-600";
+        return "text-emerald-600";
       case "decrease":
         return "text-red-600";
       default:
-        return "text-gray-600";
+        return "text-slate-600";
     }
   };
 
@@ -74,15 +69,15 @@ export default function StatsCard({ stat }: StatsCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className={`p-3 rounded-lg ${getColorClasses(stat.color)}`}>
             {getIcon(stat.icon)}
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <p className="text-sm font-medium text-slate-600">{stat.label}</p>
+            <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
           </div>
         </div>
         

@@ -21,7 +21,7 @@ export default function MainPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl  p-6 pt-20 lg:pt-6">
+    <div className="mx-auto max-w-7xl p-6 pt-20 lg:pt-6">
       <PageHeader title="Discover Study Groups" subtitle="Find and join groups that match your interests" />
 
       {/* Search and Filter Section */}
@@ -32,7 +32,7 @@ export default function MainPage() {
         {/* Filter Button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition-all hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600"
+          className="flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-slate-700 active:scale-95"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -48,15 +48,15 @@ export default function MainPage() {
 
       {/* Filter Panel (Optional - can be expanded later) */}
       {showFilters && (
-        <div className="mb-8 rounded-xl border border-gray-200 bg-white p-6">
-          <div className="flex flex-wrap gap-4">
-            <button className="rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all hover:bg-blue-100">
+        <div className="mb-8 rounded-xl bg-slate-800 p-6 shadow-lg">
+          <div className="flex flex-wrap gap-3">
+            <button className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-slate-600">
               All Groups
             </button>
-            <button className="rounded-lg bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100">
+            <button className="rounded-lg bg-slate-900/50 px-4 py-2 text-sm font-medium text-slate-300 transition-all hover:bg-slate-700 hover:text-white">
               Public Only
             </button>
-            <button className="rounded-lg bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100">
+            <button className="rounded-lg bg-slate-900/50 px-4 py-2 text-sm font-medium text-slate-300 transition-all hover:bg-slate-700 hover:text-white">
               Private Only
             </button>
           </div>

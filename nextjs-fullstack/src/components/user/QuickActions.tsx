@@ -43,44 +43,27 @@ export default function QuickActions({ actions }: QuickActionsProps) {
     }
   };
 
-  const getColorClasses = (color: string) => {
-    return "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/30";
-  };
-
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+    <div className="bg-white rounded-xl shadow-sm">
+      <div className="px-6 py-4">
+        <h3 className="text-lg font-semibold text-slate-900">Quick Actions</h3>
       </div>
       
       <div className="p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {actions.map((action) => (
             <Link
               key={action.id}
               href={action.href}
-              className="group block"
+              className="group flex flex-col items-center gap-2 p-4 rounded-lg bg-slate-700 hover:bg-slate-600 transition-all hover:scale-105 active:scale-95"
+              title={action.description}
             >
-              <div className={`p-4 rounded-lg transition-all hover:scale-105 active:scale-95 shadow-lg ${getColorClasses(action.color)}`}>
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0">
-                    {getIcon(action.icon)}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-white">
-                      {action.label}
-                    </p>
-                    <p className="text-sm opacity-90 text-white">
-                      {action.description}
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <svg className="w-5 h-5 text-white opacity-70 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
+              <div className="text-white">
+                {getIcon(action.icon)}
               </div>
+              <span className="text-xs font-medium text-white text-center">
+                {action.label}
+              </span>
             </Link>
           ))}
         </div>
