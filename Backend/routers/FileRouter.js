@@ -1,9 +1,7 @@
 import express from 'express';
 import multer from 'multer';
-import * as Sanitizer from '../utils/Sanitizer.js';
-import * as FileService from '../services/FileService.js';
+import FileService from '../classes/FileService.js';
 import FileUtils from '../utils/FileUtils.js';
-import * as RouterUtils from '../utils/RouterUtils.js';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,16 +11,9 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 
-// will add validation for file size and type
 const upload = multer({ storage });
 
-router.post(
-    '/uploadFile', 
-    upload.single('file'),
-    [Sanitizer.validateId('user_id'), Sanitizer.validateId('group_id')], 
-    Sanitizer.handleValidationErrors('uploadFile'),
-    async (req, res) => {
-    
+router.post('/uploadFile', upload.single('file'), async (req, res) => {
     try {
         const { file } = req;
         const { user_id, group_id } = req.body; 
@@ -42,7 +33,8 @@ router.post(
 
        
         fs.unlinkSync(file.path);
-        const result = await FileService.uploadAndCheckFile(fileMetadata, group_id, user_id);
+        const fileHandler = new FileService(user_id);
+        const result = await fileHandler.uploadAndCheckFile(fileMetadata, group_id);
 
         if (result.isUploaded) {
             // store in storage
@@ -69,30 +61,34 @@ router.post(
     }
 });
 
-router.post(
-    '/saveFile', 
-    [Sanitizer.validateId('user_id')], 
-    Sanitizer.handleValidationErrors('saveFile'),
-    async (req, res) => {
-        const { user_id, fileMetadata } = req.body;
-        await RouterUtils.handleBasicRequest(req, res, async () => {
-            return FileService.saveFile(fileMetadata, user_id);
-        }, 'Save file', 'File saved successfully');
-    }
-);
+router.post('/saveFile', async (req, res) => {
+    try {
+        const { user_id, file } = req.body;
 
+        const fileService = new FileService(user_id);
+        await fileService.saveFile(file);
         
-router.post(
-    '/getFileUrl', 
-    [Sanitizer.validateId('file_id')], 
-    Sanitizer.handleValidationErrors('getFileUrl'),
-    async (req, res) => {
-    
+        return res.status(200).json({
+            success: true,
+            message: 'File saved successfully.',
+        });
+    } catch (error) {
+        console.error('Error saving file:', error.message);
+        return res.status(400).json({
+            success: false,
+            message: `${error.message}`
+        });
+    }
+});
+
+router.post('/getFileUrl', async (req, res) => {
     try {
         const { file_id } = req.body;
         
-        const result = await FileService.retrieveFile(file_id); // Also check if file exists
-        const fileUrl = await FileUtils.getFileUrl(result.file.file_key);
+
+        const fileService = new FileService();
+        const retrievedFile = await fileService.retrieveFile(file_id); // Also check if file exists
+        const fileUrl = await FileUtils.getFileUrl(retrievedFile.file_key);
         return res.status(200).json({
             success: true,
             message: 'File URL generated successfully.',
@@ -107,16 +103,22 @@ router.post(
 });
 
 
-router.post(
-    '/retrieveFile', 
-    [Sanitizer.validateId('file_id')], 
-    Sanitizer.handleValidationErrors('retrieveFile'),
-    async (req, res) => {
+router.post('/retrieveFile', async (req, res) => {
+    try {
         const { file_id } = req.body;
-        await RouterUtils.handleBasicRequest(req, res, async () => {
-            return FileService.retrieveFile(file_id);
-        }, 'Retrieve file', 'File retrieved successfully');
+        const fileService = new FileService();
+        const file = await fileService.retrieveFile(file_id);
+        return res.status(200).json({
+            success: true,
+            message: 'File retrieved successfully.',
+            data: { file }
+        });
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: `Error retrieving file: ${error.message}`
+        });
     }
-);
+});
 
 export default router;
