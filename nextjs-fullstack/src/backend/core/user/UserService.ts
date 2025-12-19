@@ -1,16 +1,13 @@
 import { supabaseService, supabaseClient } from "@/backend/lib/supabaseServer";
 import { RegisterInput, LoginInput, LoginOutput, ServiceResponse, ForgotPasswordInput, ResetPasswordInput } from "./types";
-import { ClientPageRoot } from "next/dist/client/components/client-page";
 
-// This is the core user for backend
-// Will consists all core logic related to backend
-// Only access functions under shared
+
 
 export async function createUserAuth(registerInput: RegisterInput): Promise<ServiceResponse<any>> {
   try {
     const { email, password, firstName, lastName } = registerInput;
 
-    // 1️⃣ Create the user in Supabase Auth using Admin API
+    // 1Create the user in Supabase Auth using Admin API
     const { data: userData, error } = await supabaseService.auth.admin.createUser({
       email,
       password,
