@@ -5,10 +5,13 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import ProfileSection from "../ui/ProfileSection";
 import { supabase } from "@/lib/supabaseClient";
+import { getInitials } from "@/utils/formatter";
+
+
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // TODO: Replace with actual auth state
+  const [isOpen, setIsOpen] = useState(false); // Mobile sidebar state
+  const [isProfileOpen, setIsProfileOpen] = useState(false); // Profile modal state
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
@@ -17,7 +20,7 @@ export default function Sidebar() {
   const user = {
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: null, // If null, show initials
+    avatar: "https://i.pravatar.cc/150?img=12",
   };
 
   // Handle click outside sidebar to close
@@ -104,70 +107,107 @@ export default function Sidebar() {
 
   const handleLogOut = async () => {
     await supabase.auth.signOut();
-    window.location.href="/";
+    // Force a hard refresh to clear all cached data and update middleware
+    window.location.replace('/auth/login');
   }
 
   return (
     <>
-      {/* Toggle Button - Only hamburger menu */}
+      {/* Profile Modal */}
+      <ProfileModal user={user} isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+
+      {/* Mobile Toggle Button - Only visible on mobile */}
       <button
         ref={toggleButtonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed left-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/30 transition-all hover:shadow-xl hover:shadow-blue-600/40 hover:scale-105 active:scale-95
-          ${isOpen ? "hidden" : "block"}`}
+        className={`fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-white shadow-lg transition-all hover:bg-slate-700 hover:shadow-xl active:scale-95 md:hidden ${
+          isOpen ? "hidden" : "block"
+        }`}
         aria-label="Toggle Sidebar"
       >
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      {/* Sidebar */}
+      {/* Collapsed Icon-Only Sidebar - Desktop/Tablet (Always visible, takes space) */}
+      <aside className="hidden md:flex fixed left-0 top-0 z-30 h-screen w-16 flex-col items-center bg-slate-800 border-r border-slate-700 shadow-lg">
+        {/* Logo Icon - Clickable for Profile */}
+        <button 
+          onClick={() => setIsProfileOpen(!isProfileOpen)}
+          className="flex h-16 w-full items-center justify-center border-b border-slate-700 hover:bg-slate-700 transition-colors group"
+          title="Profile"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-700 text-white font-bold text-lg group-hover:bg-slate-600 transition-colors">
+            SS
+          </div>
+        </button>
+
+        {/* Icon Navigation */}
+        <nav className="flex flex-col gap-2 py-4 w-full px-2">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex h-12 w-12 items-center justify-center rounded-lg transition-all duration-200 ${
+                isActive(item.href)
+                  ? "bg-slate-700 text-white"
+                  : "text-slate-400 hover:bg-slate-700 hover:text-white"
+              }`}
+              title={item.name}
+            >
+              {item.icon}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Logout Icon - Bottom */}
+        <div className="mt-auto mb-4 w-full px-2">
+          <button
+            onClick={handleLogOut}
+            className="flex h-12 w-12 items-center justify-center rounded-lg text-slate-400 transition-all duration-200 hover:bg-red-900/30 hover:text-red-400"
+            title="Logout"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile Full Sidebar */}
       <aside
         ref={sidebarRef}
-        className={`fixed left-0 top-0 z-40 h-screen bg-gradient-to-b from-white to-gray-50/50 border-r border-gray-200 shadow-2xl transition-transform duration-300 ${
+        className={`md:hidden fixed left-0 top-0 z-40 h-screen bg-slate-800 border-r border-slate-700 shadow-xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{ width: "260px" }}
       >
         {/* Profile Section */}
-        {isLoggedIn ? (
-           <div className="border-b border-gray-200/80 bg-white/80 backdrop-blur-sm p-5">
-            <ProfileSection user={user} />
-          </div>
-        ) : (
-          <div className="border-b border-gray-200/80 bg-white/80 backdrop-blur-sm p-5">
-            <Link
-              href="/auth/login"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 font-medium text-white shadow-lg shadow-blue-600/30 transition-all hover:shadow-xl hover:shadow-blue-600/40 hover:scale-[1.02] active:scale-100"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-              </svg>
-              <span className="text-sm">Login</span>
-            </Link>
-          </div>
-        )}
+        <div className="bg-slate-900 p-5">
+          <ProfileSection user={user} />
+        </div>
 
         {/* App Title */}
         <div className="px-6 py-4">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Study Sync</h2>
+          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Study Sync</h2>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-col gap-1.5 px-4 pb-24">
+        <nav className="flex flex-col gap-1 px-3 pb-24">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`group flex items-center gap-3 rounded-xl px-4 py-3.5 font-medium transition-all duration-200 ${
+              onClick={() => setIsOpen(false)}
+              className={`group flex items-center gap-3 rounded-lg px-4 py-3 font-medium transition-all duration-200 ${
                 isActive(item.href)
-                  ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-600/30 scale-[1.02]"
-                  : "text-gray-700 hover:bg-white hover:text-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-100"
+                  ? "bg-slate-700 text-white shadow-sm"
+                  : "text-slate-300 hover:bg-slate-700 hover:text-white"
               }`}
             >
-              <span className={`transition-transform duration-200 ${
-                isActive(item.href) ? "text-white" : "text-gray-500 group-hover:text-blue-600 group-hover:scale-110"
+              <span className={`transition-colors ${
+                isActive(item.href) ? "text-white" : "text-slate-400 group-hover:text-white"
               }`}>
                 {item.icon}
               </span>
@@ -176,26 +216,92 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        {/* Bottom Section - Logout (only if logged in) */}
-        {isLoggedIn && (
-          <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200/80 bg-white/80 backdrop-blur-sm p-4">
-            <button onClick={handleLogOut} className="flex w-full items-center gap-3 rounded-xl px-4 py-3.5 font-medium text-gray-700 transition-all duration-200 hover:bg-red-50 hover:text-red-600 hover:shadow-md hover:scale-[1.02] active:scale-100 group">
-              <svg className="h-5 w-5 text-gray-500 transition-all group-hover:text-red-600 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              <span className="text-sm">Logout</span>
-            </button>
-          </div>
-        )}
+        {/* Bottom Section - Logout */}
+        <div className="absolute bottom-0 left-0 right-0 bg-slate-900 p-4">
+          <button 
+            onClick={handleLogOut} 
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-300 transition-all duration-200 hover:bg-red-900/30 hover:text-red-400 group"
+          >
+            <svg className="h-5 w-5 text-slate-400 transition-colors group-hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span className="text-sm">Logout</span>
+          </button>
+        </div>
       </aside>
 
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm transition-opacity md:hidden"
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm transition-opacity md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
+    </>
+  );
+}
+
+
+
+
+// Profile Modal Component
+function ProfileModal({ user, isOpen, onClose }: { 
+  user: { name: string; email: string; avatar: string | null }, 
+  isOpen: boolean, 
+  onClose: () => void 
+}) {
+  if (!isOpen) return null;
+
+
+  return (
+    <>
+      <div 
+        className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      
+      <div className="fixed left-20 top-4 z-50 w-72 bg-slate-800 rounded-xl shadow-2xl">
+        {/* Profile Content */}
+        <div className="p-6">
+          <div className="flex flex-col items-center">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="h-24 w-24 rounded-full"
+              />
+            ) : (
+              <div className="h-24 w-24 rounded-full bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center text-2xl font-bold text-white">
+                {getInitials(user.name)}
+              </div>
+            )}
+            
+            <div className="mt-4 text-center">
+              <h4 className="text-lg font-semibold text-white">{user.name}</h4>
+              <p className="text-sm text-slate-400 mt-1">{user.email}</p>
+            </div>
+            
+            <Link
+              href="/profile/edit"
+              onClick={onClose}
+              className="mt-6 w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors text-sm font-medium"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              Edit Profile
+            </Link>
+          </div>
+        </div>
+
+        {/* Simple close button at bottom */}
+        <button 
+          onClick={onClose}
+          className="w-full p-3 text-sm text-slate-400 hover:text-white hover:bg-slate-700/50 border-t border-slate-700 transition-colors"
+        >
+          Close
+        </button>
+      </div>
     </>
   );
 }

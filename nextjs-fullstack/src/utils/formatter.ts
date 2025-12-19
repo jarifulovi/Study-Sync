@@ -1,4 +1,3 @@
-import { time } from "console";
 
 
 export function getInitials(name: string) {
