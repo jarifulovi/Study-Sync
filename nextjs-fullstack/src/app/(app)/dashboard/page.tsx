@@ -1,8 +1,10 @@
 import { currentUser, userStats, recentActivity, quickActions } from "@/utils/data/user";
-import UserProfileOverview from "@/components/user/UserProfileOverview";
-import StatsCard from "@/components/user/StatsCard";
-import ActivityFeed from "@/components/user/ActivityFeed";
-import QuickActions from "@/components/user/QuickActions";
+import UserProfileOverview from "@/components/dashboard/UserProfileOverview";
+import StatsCard from "@/components/dashboard/StatsCard";
+import ActivityFeed from "@/components/dashboard/ActivityFeed";
+import QuickActions from "@/components/dashboard/QuickActions";
+import Achievements from "@/components/dashboard/Achievements";
+import Certificates from "@/components/dashboard/Certificates";
 
 
 
@@ -31,6 +33,15 @@ export default function DashboardPage() {
           <div className="lg:col-span-1">
             <QuickActions actions={quickActions} />
           </div>
+        </div>
+
+        {/* Achievements & Certificates Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Achievements */}
+          <Achievements achievements={currentUser.achievements} />
+          
+          {/* Certificates */}
+          <Certificates certificates={currentUser.certificates} />
         </div>
       </div>
     </div>
