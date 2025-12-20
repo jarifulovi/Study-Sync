@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, DragEvent, ChangeEvent, useEffect } from 'react';
+
 
 
 // Helper component for field errors
@@ -40,8 +41,9 @@ export function Input({
 
   return (
     <div className="relative">
-      <label htmlFor={name} className="mb-2 block text-sm font-semibold text-gray-700">
+      <label htmlFor={name} className="mb-2 block text-sm font-medium text-slate-700">
         {label}
+        {required && <span className="text-red-600"> *</span>}
       </label>
       <div className="relative">
         {isTextarea ? (
@@ -53,10 +55,10 @@ export function Input({
             title={title}
             placeholder={placeholder}
             rows={rows}
-            className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+            className={`w-full rounded-lg border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-2 resize-none ${
               error
                 ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                : "border-slate-300 bg-white focus:border-slate-400 focus:ring-slate-400/20"
             }`}
             required={required}
           />
@@ -69,14 +71,70 @@ export function Input({
             onChange={onChange}
             title={title}
             placeholder={placeholder}
-            className={`w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+            className={`w-full rounded-lg border px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-2 ${
               error
                 ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-                : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+                : "border-slate-300 bg-white focus:border-slate-400 focus:ring-slate-400/20"
             }`}
             required={required}
           />
         )}
+      </div>
+      {error && <FieldError error={error} />}
+    </div>
+  );
+}
+
+
+
+// Select component
+interface SelectProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { value: string; label: string }[];
+  error?: string;
+  placeholder?: string;
+  required?: boolean;
+}
+
+export function Select({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+  error,
+  placeholder = "Select an option",
+  required = true
+}: SelectProps) {
+  return (
+    <div className="relative">
+      <label htmlFor={name} className="mb-2 block text-sm font-medium text-slate-700">
+        {label}
+        {required && <span className="text-red-600"> *</span>}
+      </label>
+      <div className="relative">
+        <select
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          className={`w-full rounded-lg border px-4 py-3 text-sm outline-none transition-all focus:ring-2 ${
+            error
+              ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
+              : "border-slate-300 bg-white focus:border-slate-400 focus:ring-slate-400/20"
+          }`}
+          required={required}
+        >
+          <option value="">{placeholder}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
       {error && <FieldError error={error} />}
     </div>
@@ -110,8 +168,9 @@ export function PasswordInput({
 
   return (
     <div className="relative">
-      <label htmlFor={name} className="mb-2 block text-sm font-semibold text-gray-700">
+      <label htmlFor={name} className="mb-2 block text-sm font-medium text-slate-700">
         {label}
+        {required && <span className="text-red-600"> *</span>}
       </label>
       <div className="relative">
         <input
@@ -122,17 +181,17 @@ export function PasswordInput({
           onChange={onChange}
           title={title}
           placeholder={placeholder}
-          className={`w-full rounded-xl border px-4 py-3 pr-12 text-sm outline-none transition-all placeholder:text-gray-400 focus:ring-2 ${
+          className={`w-full rounded-lg border px-4 py-3 pr-12 text-sm outline-none transition-all placeholder:text-slate-400 focus:ring-2 ${
             error
               ? "border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-500/20"
-              : "border-gray-200 bg-gray-50 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
+              : "border-slate-300 bg-white focus:border-slate-400 focus:ring-slate-400/20"
           }`}
           required={required}
         />
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-sm font-medium"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 text-sm font-medium"
         >
           {showPassword ? (
             // Eye slash icon (hidden)
@@ -153,4 +212,234 @@ export function PasswordInput({
   );
 }
 
+
+
+
+interface FileUploadProps {
+  label: string;
+  name: string;
+  onChange: (file: File | null) => void;
+  error?: string;
+  placeholder?: string;
+  title?: string;
+  required?: boolean;
+  accept?: string;
+  maxSize?: number; // in bytes
+  maxDimensions?: {
+    width: number;
+    height: number;
+  };
+  value?: File | null;
+}
+
+export function FileUpload({
+  label,
+  name,
+  onChange,
+  error,
+  placeholder = "Click to upload or drag and drop",
+  title = "SVG, PNG, JPG or GIF (MAX. 800x400px)",
+  required = false,
+  accept = ".svg,.png,.jpg,.jpeg,.gif",
+  maxSize = 5 * 1024 * 1024, // 5MB default
+  maxDimensions = { width: 800, height: 400 },
+  value = null
+}: FileUploadProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle file validation
+  const validateFile = (file: File): boolean => {
+    setValidationError(null);
+
+    // Check file size
+    if (file.size > maxSize) {
+      setValidationError(`File size exceeds ${maxSize / (1024 * 1024)}MB limit`);
+      return false;
+    }
+
+    // Check file type
+    const acceptedTypes = accept.split(',').map(type => type.trim());
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!acceptedTypes.includes(fileExtension)) {
+      setValidationError(`File type not supported. Accepted: ${accept}`);
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle file selection
+  const handleFileSelect = (file: File) => {
+    if (validateFile(file)) {
+      onChange(file);
+      
+      // Create preview URL for images
+      if (file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        setPreviewUrl(url);
+      }
+    } else {
+      onChange(null);
+      setPreviewUrl(null);
+    }
+  };
+
+  // Handle input change
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  // Handle drag and drop
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const file = e.dataTransfer.files?.[0] || null;
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  // Remove file
+  const handleRemoveFile = () => {
+    onChange(null);
+    setPreviewUrl(null);
+    setValidationError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Clean up preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  return (
+    <div className="w-full">
+      <label className="block text-sm font-medium text-default mb-2">
+        {label}
+        {required && <span className="text-danger"> *</span>}
+      </label>
+
+      <div
+        className={`flex items-center justify-center w-full ${
+          error || validationError ? 'border-danger' : ''
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <input
+          id={name}
+          name={name}
+          type="file"
+          ref={fileInputRef}
+          onChange={handleInputChange}
+          accept={accept}
+          className="hidden"
+          required={required}
+        />
+        
+        <label
+          htmlFor={name}
+          className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+            isDragging
+              ? 'border-primary bg-primary/10'
+              : error || validationError
+              ? 'border-danger bg-danger/5'
+              : 'border-default-strong bg-neutral-secondary-medium hover:bg-neutral-tertiary-medium'
+          }`}
+        >
+          {previewUrl ? (
+            // Show preview when file is selected
+            <div className="relative w-full h-full p-4">
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="w-full h-full object-contain rounded"
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleRemoveFile();
+                }}
+                className="absolute top-2 right-2 bg-danger text-black text-lg rounded-full w-8 h-8 flex items-center justify-center hover:bg-danger/80"
+              >
+                ×
+              </button>
+              <div className="absolute bottom-2 left-2 right-2 bg-black/50 text-white text-xs p-2 rounded">
+                <p className="truncate">{value?.name}</p>
+                <p>{(value?.size || 0) / 1024} KB</p>
+              </div>
+            </div>
+          ) : (
+            // Show upload prompt when no file
+            <div className="flex flex-col items-center justify-center text-body pt-5 pb-6">
+              <svg
+                className="w-8 h-8 mb-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 17h3a3 3 0 0 0 0-6h-.025a5.56 5.56 0 0 0 .025-.5A5.5 5.5 0 0 0 7.207 9.021C7.137 9.017 7.071 9 7 9a4 4 0 1 0 0 8h2.167M12 19v-9m0 0-2 2m2-2 2 2"
+                />
+              </svg>
+              <p className="mb-2 text-sm">
+                <span className="font-semibold">{placeholder}</span>
+              </p>
+              <p className="text-xs">{title}</p>
+              {maxDimensions && (
+                <p className="text-xs mt-1">
+                  Max dimensions: {maxDimensions.width}×{maxDimensions.height}px
+                </p>
+              )}
+            </div>
+          )}
+        </label>
+      </div>
+
+      {/* Error messages */}
+      {(error || validationError) && (
+        <FieldError error={validationError || error} />
+      )}
+
+      {/* File info */}
+      {value && !validationError && (
+        <div className="mt-2 text-sm text-success">
+          ✓ File selected: {value.name} ({(value.size / 1024).toFixed(1)} KB)
+        </div>
+      )}
+    </div>
+  );
+}
 

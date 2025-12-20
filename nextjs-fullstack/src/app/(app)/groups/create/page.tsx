@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PageHeaderWithBackButton } from "@/components/ui/PageHeader";
+import { Input, Select, FileUpload } from "@/components/ui/Inputs";
+import { isValidText } from "@/utils/validation";
 
 const GROUP_TYPES = [
   "Study Group",
@@ -29,17 +31,67 @@ export default function CreateGroupPage() {
     topics: [] as string[],
     customTopic: "",
     status: "public",
-    image: ""
+    imageUrl: ""      // image path of supabase storage
+  });
+  const [file, setFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState({
+    name: "",
+    description: "",
+    type: ""
   });
   
   const [showCustomTopic, setShowCustomTopic] = useState(false);
 
+  // Validate individual field
+  const validateField = (name: string, value: string): string => {
+    switch (name) {
+      case "name":
+        if (!isValidText(value, 3, 100, true)) {
+          return "Group name must be at least 3 characters";
+        }
+        return "";
+      case "description":
+        if (!isValidText(value, 10, 500, true)) {
+          return "Description must be at least 10 characters";
+        }
+        return "";
+      case "type":
+        if (!value.trim()) {
+          return "Please select a group type";
+        }
+        return "";
+      default:
+        return "";
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors] !== undefined) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ""
+      }));
+    }
+  };
+
+  // Validate on blur
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (errors[name as keyof typeof errors] !== undefined) {
+      const error = validateField(name, value);
+      setErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
+    }
   };
 
   const handleTopicToggle = (topic: string) => {
@@ -71,90 +123,123 @@ export default function CreateGroupPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Creating group with data:", formData);
+    
+    // Validate all required fields
+    const nameError = validateField("name", formData.name);
+    const descriptionError = validateField("description", formData.description);
+    const typeError = validateField("type", formData.type);
+
+    setErrors({
+      name: nameError,
+      description: descriptionError,
+      type: typeError
+    });
+
+    if (nameError || descriptionError || typeError) {
+      return;
+    }
+
+    // TODO: Upload image first if file exists, get URL, then submit form with imageUrl
+    console.log("Creating group with data:", {
+      ...formData,
+      imageUrl: formData.imageUrl || "" // Will be populated after image upload
+    });
+    console.log("Image file to upload:", file);
     // TODO: Implement actual group creation logic
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 pt-20 lg:pt-6">
+    <div className="min-h-screen bg-white p-6 pt-20 lg:pt-6">
       <div className="mx-auto max-w-4xl">
         <PageHeaderWithBackButton title="Create New Group" subtitle="Set up a new study group to collaborate with others" />
+
+        {/* Image Upload Section (Outside Form - Upload First) */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <h2 className="text-lg font-semibold text-slate-900 mb-2">Group Image (Optional)</h2>
+          <p className="text-sm text-slate-600 mb-6">
+            Upload an image first to get the URL, then fill out the form below
+          </p>
+          <FileUpload
+            label="Upload Group Image"
+            name="groupImage"
+            value={file}
+            onChange={(uploadedFile) => {
+              setFile(uploadedFile);
+              // TODO: When backend is ready, upload the file here and set formData.imageUrl
+              if (uploadedFile) {
+                console.log("Image selected:", uploadedFile.name);
+                // After upload completes, set: setFormData(prev => ({...prev, imageUrl: "generated-url"}))
+              }
+            }}
+            placeholder="Click to upload or drag and drop"
+            title="SVG, PNG, JPG or GIF (MAX. 800x400px)"
+            accept=".svg,.png,.jpg,.jpeg,.gif"
+            maxSize={5 * 1024 * 1024} // 5MB
+            maxDimensions={{ width: 800, height: 400 }}
+            required={false}
+          />
+        </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Information Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Basic Information</h2>
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">Basic Information</h2>
             
             <div className="space-y-6">
               {/* Group Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Group Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                  placeholder="Enter your group name..."
-                  required
-                />
-              </div>
+              <Input
+                label="Group Name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleInputChange}
+                error={errors.name}
+                placeholder="Enter your group name..."
+                title="Group name (minimum 3 characters)"
+                required
+              />
 
               {/* Description */}
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                  Description *
-                </label>
-                <textarea
-                  id="description"
+                <Input
+                  label="Description"
                   name="description"
+                  type="textarea"
                   value={formData.description}
                   onChange={handleInputChange}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                  error={errors.description}
                   placeholder="Describe what this group is about, its goals, and what members can expect..."
+                  title="Group description (minimum 10 characters)"
                   required
+                  rows={4}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   {formData.description.length}/500 characters
                 </p>
               </div>
 
               {/* Group Type */}
-              <div>
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-                  Group Type *
-                </label>
-                <select
-                  id="type"
-                  name="type"
-                  value={formData.type}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                  required
-                >
-                  <option value="">Select a group type...</option>
-                  {GROUP_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                label="Group Type"
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                options={GROUP_TYPES.map(type => ({ value: type, label: type }))}
+                error={errors.type}
+                placeholder="Select a group type..."
+                required
+              />
             </div>
           </div>
 
           {/* Topics Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Topics & Tags</h2>
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">Topics & Tags</h2>
             
             {/* Topic Selection */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-slate-700 mb-3">
                 Select Topics (choose all that apply)
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -165,8 +250,8 @@ export default function CreateGroupPage() {
                     onClick={() => handleTopicToggle(topic)}
                     className={`p-3 text-sm font-medium rounded-lg border-2 transition-all ${
                       formData.topics.includes(topic)
-                        ? "border-blue-600 bg-blue-50 text-blue-700"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50"
+                        ? "border-slate-700 bg-slate-100 text-slate-900"
+                        : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                     }`}
                   >
                     {topic}
@@ -181,7 +266,7 @@ export default function CreateGroupPage() {
                 <button
                   type="button"
                   onClick={() => setShowCustomTopic(true)}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                  className="text-sm text-slate-700 hover:text-slate-900 font-medium flex items-center gap-1"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -194,14 +279,14 @@ export default function CreateGroupPage() {
                     type="text"
                     value={formData.customTopic}
                     onChange={(e) => setFormData(prev => ({...prev, customTopic: e.target.value}))}
-                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    className="flex-1 px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 outline-none"
                     placeholder="Enter custom topic..."
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomTopic())}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomTopic())}
                   />
                   <button
                     type="button"
                     onClick={handleAddCustomTopic}
-                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    className="hidden sm:block px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
                   >
                     Add
                   </button>
@@ -211,7 +296,7 @@ export default function CreateGroupPage() {
                       setShowCustomTopic(false);
                       setFormData(prev => ({...prev, customTopic: ""}));
                     }}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
+                    className="px-4 py-2 bg-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-300 transition-colors"
                   >
                     Cancel
                   </button>
@@ -222,18 +307,18 @@ export default function CreateGroupPage() {
             {/* Selected Topics Display */}
             {formData.topics.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-3">Selected Topics:</p>
+                <p className="text-sm font-medium text-slate-700 mb-3">Selected Topics:</p>
                 <div className="flex flex-wrap gap-2">
                   {formData.topics.map((topic) => (
                     <span
                       key={topic}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 text-slate-800 text-sm font-medium rounded-full"
                     >
                       {topic}
                       <button
                         type="button"
                         onClick={() => handleRemoveTopic(topic)}
-                        className="ml-1 hover:text-blue-600"
+                        className="ml-1 hover:text-slate-600"
                       >
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -247,13 +332,13 @@ export default function CreateGroupPage() {
           </div>
 
           {/* Settings Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Group Settings</h2>
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">Group Settings</h2>
             
             <div className="space-y-6">
               {/* Privacy Setting */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-slate-700 mb-3">
                   Privacy Setting
                 </label>
                 <div className="space-y-3">
@@ -264,11 +349,11 @@ export default function CreateGroupPage() {
                       value="public"
                       checked={formData.status === "public"}
                       onChange={handleInputChange}
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-slate-600 focus:ring-slate-500"
                     />
                     <div>
-                      <div className="font-medium text-gray-900">Public</div>
-                      <div className="text-sm text-gray-600">Anyone can find and join this group</div>
+                      <div className="font-medium text-slate-900">Public</div>
+                      <div className="text-sm text-slate-600">Anyone can find and join this group</div>
                     </div>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -278,33 +363,14 @@ export default function CreateGroupPage() {
                       value="private"
                       checked={formData.status === "private"}
                       onChange={handleInputChange}
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-slate-600 focus:ring-slate-500"
                     />
                     <div>
-                      <div className="font-medium text-gray-900">Private</div>
-                      <div className="text-sm text-gray-600">Only invited members can join</div>
+                      <div className="font-medium text-slate-900">Private</div>
+                      <div className="text-sm text-slate-600">Only invited members can join</div>
                     </div>
                   </label>
                 </div>
-              </div>
-
-              {/* Group Image URL (Optional) */}
-              <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-                  Group Image URL (Optional)
-                </label>
-                <input
-                  type="url"
-                  id="image"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                  placeholder="https://example.com/image.jpg"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Provide a URL to an image that represents your group
-                </p>
               </div>
             </div>
           </div>
@@ -313,13 +379,13 @@ export default function CreateGroupPage() {
           <div className="flex flex-col sm:flex-row gap-4 sm:justify-end">
             <Link
               href="/groups"
-              className="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-center"
+              className="w-full sm:w-auto px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-lg hover:bg-slate-50 transition-colors text-center"
             >
               Cancel
             </Link>
             <button
               type="submit"
-              className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30"
+              className="w-full sm:w-auto px-8 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors shadow-lg"
             >
               Create Group
             </button>
