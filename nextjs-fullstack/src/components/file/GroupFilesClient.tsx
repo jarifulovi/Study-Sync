@@ -67,8 +67,8 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
             // Handle file upload logic here
             console.log('Upload file clicked');
           }}
-          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-4 py-3 sm:px-5 font-semibold text-white shadow-lg shadow-green-600/30 transition-all hover:scale-105 hover:shadow-xl hover:shadow-green-600/40 active:scale-95 whitespace-nowrap text-sm sm:text-base"
-        >
+          className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 sm:px-5 font-semibold text-white shadow-lg transition-all hover:bg-emerald-700 hover:scale-105 hover:shadow-xl active:scale-95 whitespace-nowrap text-sm sm:text-base">
+        
           <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
@@ -82,7 +82,7 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
         {/* Search */}
         <div className="relative w-full">
           <svg
-            className="absolute left-3 top-1/2 h-4 w-4 sm:h-5 sm:w-5 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 h-4 w-4 sm:h-5 sm:w-5 -translate-y-1/2 text-slate-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -94,7 +94,7 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
             placeholder="Search files..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 sm:pl-10 pr-4 text-sm outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+            className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 sm:pl-10 pr-4 text-sm outline-none transition-all focus:border-slate-400 focus:ring-2 focus:ring-slate-400/20"
           />
         </div>
 
@@ -104,8 +104,8 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
             onClick={() => setMimeTypeFilter("all")}
             className={`rounded-lg px-3 py-2 text-xs sm:text-sm font-medium transition-all ${
               mimeTypeFilter === "all"
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-slate-800 text-white shadow-md"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             All
@@ -116,8 +116,8 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
               onClick={() => setMimeTypeFilter(category)}
               className={`rounded-lg px-3 py-2 text-xs sm:text-sm font-medium capitalize transition-all ${
                 mimeTypeFilter === category
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-slate-800 text-white shadow-md"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               }`}
             >
               {category}
@@ -127,16 +127,16 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
       </div>
 
       {/* Files Table */}
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl bg-white shadow-sm">
         {filteredFiles.length === 0 ? (
           <div className="p-8 sm:p-12 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-gray-100">
-              <svg className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto mb-4 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-slate-100">
+              <svg className="h-6 w-6 sm:h-8 sm:w-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="mb-2 text-base sm:text-lg font-semibold text-gray-900">No files found</h3>
-            <p className="text-xs sm:text-sm text-gray-600">
+            <h3 className="mb-2 text-base sm:text-lg font-semibold text-slate-900">No files found</h3>
+            <p className="text-xs sm:text-sm text-slate-600">
               {searchQuery
                 ? "Try adjusting your search or filters"
                 : "Upload your first file to get started"}
@@ -146,24 +146,24 @@ export default function GroupFilesClient({ group, groupFiles }: GroupFilesClient
           <div className="overflow-x-auto">
             <div className="min-w-full">
               <table className="w-full">
-                <thead className="border-b border-gray-200 bg-gray-50">
+                <thead className="border-b border-slate-200 bg-slate-50">
                   <tr>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-700">
                       Name
                     </th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 hidden sm:table-cell">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-700 hidden sm:table-cell">
                       Type
                     </th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 hidden md:table-cell">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-700 hidden md:table-cell">
                       Size
                     </th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 hidden md:table-cell">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-700 hidden md:table-cell">
                       Uploaded By
                     </th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 hidden lg:table-cell">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-700 hidden lg:table-cell">
                       Date
                     </th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-700">
                       Action
                     </th>
                   </tr>

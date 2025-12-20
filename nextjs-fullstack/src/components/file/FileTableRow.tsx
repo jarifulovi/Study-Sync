@@ -92,7 +92,7 @@ export default function FileTableRow({ file }: FileTableRowProps) {
   };
 
   return (
-    <tr className="group border-b border-gray-100 transition-colors hover:bg-blue-50/30">
+    <tr className="group border-b border-slate-100 transition-colors hover:bg-slate-50">
       {/* File Name & Icon */}
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
@@ -103,7 +103,7 @@ export default function FileTableRow({ file }: FileTableRowProps) {
               onClick={() => window.open(file.url, "_blank")}
               title={file.name} // tooltip for full name
               className="
-                text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors text-left 
+                text-sm font-medium text-slate-900 hover:text-slate-700 transition-colors text-left 
                 truncate block 
                 max-w-[120px] sm:max-w-[180px] md:max-w-[260px] lg:max-w-[320px]
               "
@@ -116,13 +116,13 @@ export default function FileTableRow({ file }: FileTableRowProps) {
 
       {/* Type */}
       <td className="px-6 py-4 hidden sm:table-cell">
-        <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+        <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
           {getFileTypeLabel(file.mime_type)}
         </span>
       </td>
 
       {/* Size */}
-      <td className="px-6 py-4 text-sm text-gray-600 hidden md:table-cell">
+      <td className="px-6 py-4 text-sm text-slate-600 hidden md:table-cell">
         {formatFileSize(file.size)}
       </td>
 
@@ -145,7 +145,7 @@ export default function FileTableRow({ file }: FileTableRowProps) {
       </td>
 
       {/* Uploaded Date */}
-      <td className="px-6 py-4 text-sm text-gray-600 hidden lg:table-cell">
+      <td className="px-6 py-4 text-sm text-slate-600 hidden lg:table-cell">
         {getTimeAgo(file.uploaded_at)}
       </td>
 
@@ -153,7 +153,7 @@ export default function FileTableRow({ file }: FileTableRowProps) {
       <td className="px-6 py-4">
         <button
           onClick={() => window.open(file.url, "_blank")}
-          className="text-gray-400 hover:text-blue-600 transition-colors"
+          className="text-slate-400 hover:text-slate-700 transition-colors"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

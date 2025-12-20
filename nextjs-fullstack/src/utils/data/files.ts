@@ -79,7 +79,7 @@ export const files: File[] = [
     name: "Binary Search Trees.pdf",
     mime_type: "application/pdf",
     size: 2457600, // 2.4 MB
-    uploaded_by: { id: "user1", name: "John Doe", image: null },
+    uploaded_by: { id: "user1", name: "John Doe", image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-25T10:30:00Z",
     url: "#",
   },
@@ -89,7 +89,7 @@ export const files: File[] = [
     name: "Dynamic Programming Guide.pdf",
     mime_type: "application/pdf",
     size: 3145728, // 3 MB
-    uploaded_by: { id: "user2", name: "Sarah Smith", image: null },
+    uploaded_by: { id: "user2", name: "Sarah Smith", image: 'https://ui-avatars.com/api/?name=Jennifer+Taylor&background=ec4899&color=fff' },
     uploaded_at: "2025-10-24T14:20:00Z",
     url: "#",
   },
@@ -99,7 +99,7 @@ export const files: File[] = [
     name: "Graph Algorithms.pptx",
     mime_type: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     size: 5242880, // 5 MB
-    uploaded_by: { id: "user3", name: "Alex Johnson", image: null },
+    uploaded_by: { id: "user3", name: "Alex Johnson", image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-23T09:15:00Z",
     url: "#",
   },
@@ -109,7 +109,7 @@ export const files: File[] = [
     name: "sorting-algorithms.zip",
     mime_type: "application/zip",
     size: 1048576, // 1 MB
-    uploaded_by: { id: "user1", name: "John Doe", image: null },
+    uploaded_by: { id: "user1", name: "John Doe", image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-22T16:45:00Z",
     url: "#",
   },
@@ -121,7 +121,7 @@ export const files: File[] = [
     name: "React Best Practices.pdf",
     mime_type: "application/pdf",
     size: 1572864, // 1.5 MB
-    uploaded_by: { id: "user4", name: "Emma Wilson", image: null },
+    uploaded_by: { id: "user4", name: "Emma Wilson", image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-21T11:00:00Z",
     url: "#",
   },
@@ -131,7 +131,7 @@ export const files: File[] = [
     name: "TypeScript Handbook.pdf",
     mime_type: "application/pdf",
     size: 2097152, // 2 MB
-    uploaded_by: { id: "user5", name: "Michael Chen", image: null },
+    uploaded_by: { id: "user5", name: "Michael Chen", image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-20T15:30:00Z",
     url: "#",
   },
@@ -141,7 +141,7 @@ export const files: File[] = [
     name: "CSS Grid Tutorial.docx",
     mime_type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     size: 524288, // 512 KB
-    uploaded_by: { id: "user4", name: "Emma Wilson", image: null },
+    uploaded_by: { id: "user4", name: "Emma Wilson", image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-19T10:15:00Z",
     url: "#",
   },
@@ -151,7 +151,7 @@ export const files: File[] = [
     name: "api-documentation.html",
     mime_type: "text/html",
     size: 204800, // 200 KB
-    uploaded_by: { id: "user6", name: "David Lee", image: null },
+    uploaded_by: { id: "user6", name: "David Lee", image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80' },
     uploaded_at: "2025-10-18T13:45:00Z",
     url: "#",
   },
