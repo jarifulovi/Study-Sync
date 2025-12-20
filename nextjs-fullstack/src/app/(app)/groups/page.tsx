@@ -2,7 +2,6 @@ import Link from "next/link";
 import { groups } from "@/utils/data/groups";
 import GroupCard from "@/components/groups/GroupCard";
 import NoGroupsSection from "@/components/groups/NoGroupsSection";
-import Page from "@/app/page";
 import PageHeader from "@/components/ui/PageHeader";
 
 export default function GroupsPage() {
