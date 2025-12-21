@@ -4,9 +4,10 @@ import { getInitials } from "@/utils/formatter";
 interface NotificationBarProps {
   notification: Notification;
   onMarkAsRead: (notificationId: string) => void;
+  onDelete: (notificationId: string) => void;
 }
 
-export default function NotificationBar({ notification, onMarkAsRead }: NotificationBarProps) {
+export default function NotificationBar({ notification, onMarkAsRead, onDelete }: NotificationBarProps) {
 
 
   const getNotificationIcon = (type: Notification["type"]) => {
@@ -53,17 +54,17 @@ export default function NotificationBar({ notification, onMarkAsRead }: Notifica
   const getNotificationColor = (type: Notification["type"]) => {
     switch (type) {
       case "invitation":
-        return "bg-blue-100 text-blue-600";
+        return "bg-blue-50 text-blue-600";
       case "join_request":
-        return "bg-purple-100 text-purple-600";
+        return "bg-purple-50 text-purple-600";
       case "join_group":
-        return "bg-green-100 text-green-600";
+        return "bg-emerald-50 text-emerald-600";
       case "discussion_topic":
-        return "bg-orange-100 text-orange-600";
+        return "bg-amber-50 text-amber-600";
       case "file_shared":
-        return "bg-indigo-100 text-indigo-600";
+        return "bg-indigo-50 text-indigo-600";
       case "video_conferencing":
-        return "bg-red-100 text-red-600";
+        return "bg-rose-50 text-rose-600";
     }
   };
 
@@ -81,16 +82,15 @@ export default function NotificationBar({ notification, onMarkAsRead }: Notifica
 
   return (
     <div
-      onClick={() => onMarkAsRead(notification.notification_id)}
-      className={`group cursor-pointer border-b border-gray-100 p-5 transition-all hover:bg-gray-50 ${
-        !notification.is_read ? "bg-blue-50/30" : "bg-white"
+      className={`group relative p-5 transition-all hover:bg-slate-50 ${
+        !notification.is_read ? "bg-slate-50/50" : "bg-white"
       }`}
     >
       <div className="flex gap-4">
         {/* Avatar or Icon */}
         <div className="flex-shrink-0">
           {notification.sender ? (
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-semibold text-white shadow-md">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-900 text-sm font-semibold text-white shadow-md">
               {notification.sender.image ? (
                 <img
                   src={notification.sender.image}
@@ -114,15 +114,45 @@ export default function NotificationBar({ notification, onMarkAsRead }: Notifica
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <p className="mb-1 text-sm text-gray-800">{notification.content}</p>
+          <p className="mb-1 text-sm text-slate-800 pr-8">{notification.content}</p>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-slate-500">
               {getTimeAgo(notification.receive_date)}
             </span>
             {!notification.is_read && (
-              <span className="flex h-2 w-2 rounded-full bg-blue-600"></span>
+              <span className="flex h-2 w-2 rounded-full bg-emerald-600"></span>
             )}
           </div>
+        </div>
+
+        {/* Actions */}
+        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {!notification.is_read && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onMarkAsRead(notification.notification_id);
+              }}
+              className="p-2 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+              title="Mark as read"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          )}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(notification.notification_id);
+            }}
+            className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+            title="Delete notification"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
