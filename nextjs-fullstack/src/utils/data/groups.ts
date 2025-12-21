@@ -59,7 +59,6 @@ export const groupsBar = [
     image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&h=300&fit=crop",
     role: "admin" as const,
     lastMessage: "Let's discuss the assignment",
-    unreadCount: 3,
   },
   {
     id: "2",
@@ -74,13 +73,12 @@ export const groupsBar = [
     image: "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=300&fit=crop",
     role: "member" as const,
     lastMessage: "Check out this resource",
-    unreadCount: 1,
   },
   {
     id: "4",
     name: "Database Design",
     image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=300&fit=crop",
-    role: "admin" as const,
+    role: "moderator" as const,
     lastMessage: "Meeting at 3 PM",
   },
   {
@@ -96,7 +94,6 @@ export const groupsBar = [
     image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop",
     role: "member" as const,
     lastMessage: "AWS tutorial tomorrow",
-    unreadCount: 5,
   },
   {
     id: "7",
@@ -104,15 +101,13 @@ export const groupsBar = [
     image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=300&fit=crop",
     role: "member" as const,
     lastMessage: "Needs to learn testing",
-    unreadCount: 3,
   },
   {
     id: "8",
     name: "Mongose Worriors",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
-    role: "member" as const,
+    role: "moderator" as const,
     lastMessage: "Today will start part 2",
-    unreadCount: 1,
   },
 ];
 

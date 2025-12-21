@@ -10,7 +10,7 @@ interface ChatPanelProps {
     id: string;
     name: string;
     image: string | null;
-    role: "admin" | "member";
+    role: "admin" | "member" | "moderator";
     lastMessage?: string;
     unreadCount?: number;
   } | null;

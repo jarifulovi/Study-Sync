@@ -8,7 +8,7 @@ interface ChatHeaderProps {
   groupId: string;
   groupName: string;
   groupImage: string | null;
-  userRole: "admin" | "member";
+  userRole: "admin" | "member" | "moderator";
 }
 
 export default function ChatHeader({ groupId, groupName, groupImage, userRole }: ChatHeaderProps) {
