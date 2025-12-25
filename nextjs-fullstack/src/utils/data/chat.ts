@@ -1,49 +1,41 @@
 /**
- * Prisma Schema Suggestion:
+ * PostgreSQL Schema (Normalized):
  * 
- * model ChatMessage {
- *   id                String   @id @default(uuid())
- *   groupId           String
- *   sessionId         String?  // For discussion messages, null for group chat
- *   type              MessageType
- *   senderId          String
- *   senderName        String   // Denormalized for performance
- *   senderAvatar      String?
- *   content           String
- *   timestamp         DateTime @default(now())
- *   
- *   // File-specific fields
- *   fileUrl           String?
- *   fileName          String?
- *   fileSize          String?
- *   
- *   
- *   // Notification-specific field
- *   notificationType  NotificationType?
- *   discussionTitle   String?
- *   
- *   // Relations
- *   group             Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
- *   sender            User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
- *   session           Discussion? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
- *   
- *   @@index([groupId, timestamp])
- *   @@index([sessionId])
- * }
+ * Table: chat_messages
+ * - id                UUID PRIMARY KEY DEFAULT gen_random_uuid()
+ * - group_id          UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE
+ * - session_id        UUID REFERENCES discussions(id) ON DELETE SET NULL
+ * - type              VARCHAR(20) NOT NULL CHECK (type IN ('message', 'notification', 'file', 'discussion'))
+ * - sender_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
+ * - content           TEXT NOT NULL
+ * - timestamp         TIMESTAMP NOT NULL DEFAULT NOW()
+ * - is_edited         BOOLEAN DEFAULT FALSE
+ * - is_deleted        BOOLEAN DEFAULT FALSE
+ * - created_at        TIMESTAMP DEFAULT NOW()
+ * - updated_at        TIMESTAMP DEFAULT NOW()
  * 
- * enum MessageType {
- *   message
- *   notification
- *   file
- *   discussion
- * }
+ * Table: chat_files (for file messages)
+ * - id                UUID PRIMARY KEY DEFAULT gen_random_uuid()
+ * - message_id        UUID NOT NULL REFERENCES chat_messages(id) ON DELETE CASCADE
+ * - file_url          TEXT NOT NULL
+ * - file_name         VARCHAR(255) NOT NULL
+ * - file_size         VARCHAR(50) NOT NULL
  * 
- * enum NotificationType {
- *   join
- *   leave
- *   roleChange
- *   discussionStart
- * }
+ * Table: chat_notifications (for notification messages)
+ * - id                UUID PRIMARY KEY DEFAULT gen_random_uuid()
+ * - message_id        UUID NOT NULL REFERENCES chat_messages(id) ON DELETE CASCADE
+ * - notification_type VARCHAR(20) NOT NULL CHECK (notification_type IN ('join', 'leave', 'roleChange', 'kicked', 'banned'))
+ * 
+ * Table: chat_discussions (for discussion messages)
+ * - id                UUID PRIMARY KEY DEFAULT gen_random_uuid()
+ * - message_id        UUID NOT NULL REFERENCES chat_messages(id) ON DELETE CASCADE
+ * - discussion_id     UUID NOT NULL REFERENCES discussions(id) ON DELETE CASCADE
+ * - discussion_title  VARCHAR(255) NOT NULL
+ * 
+ * Indexes:
+ * - CREATE INDEX idx_messages_group_timestamp ON chat_messages(group_id, timestamp DESC);
+ * - CREATE INDEX idx_messages_session ON chat_messages(session_id) WHERE session_id IS NOT NULL;
+ * - CREATE INDEX idx_messages_sender ON chat_messages(sender_id);
  */
 
 // Base message properties (common to all message types)
@@ -54,7 +46,7 @@ interface BaseMessage {
   senderId: string;
   senderName: string;
   senderAvatar: string | null;
-  timestamp: string; // ISO string, will be DateTime in Prisma
+  timestamp: string; // ISO string, will be TIMESTAMP in PostgreSQL
 }
 
 // Regular text message
@@ -63,13 +55,11 @@ export interface TextMessage extends BaseMessage {
   content: string;
 }
 
-// System notification (user join/leave/role change/discussion start)
+// System notification (user join/leave/role change/kicked/banned)
 export interface NotificationMessage extends BaseMessage {
   type: "notification";
   content: string;
-  notificationType: "join" | "leave" | "roleChange" | "discussionStart";
-  // Optional fields for discussionStart subtype
-  discussionTitle?: string;
+  notificationType: "join" | "leave" | "roleChange" | "kicked" | "banned";
 }
 
 // File upload message
@@ -81,11 +71,20 @@ export interface FileMessage extends BaseMessage {
   fileSize: string;
 }
 
+// Discussion start message (separate from notification)
+export interface DiscussionMessage extends BaseMessage {
+  type: "discussion";
+  content: string;
+  discussionId: string;
+  discussionTitle: string;
+}
+
 // Discriminated Union
 export type ChatMessage =
   | TextMessage
   | NotificationMessage
-  | FileMessage;
+  | FileMessage
+  | DiscussionMessage;
 
 // Sample chat data for group "1"
 export const chatMessages: ChatMessage[] = [
@@ -126,13 +125,13 @@ export const chatMessages: ChatMessage[] = [
   {
     id: "4",
     groupId: "1",
-    sessionId: "11",
-    type: "notification",
+    sessionId: null,
+    type: "discussion",
     senderId: "user1",
     senderName: "John Doe",
     senderAvatar: "https://i.pravatar.cc/150?img=12",
     content: "Started a new discussion",
-    notificationType: "discussionStart",
+    discussionId: "disc-1",
     discussionTitle: "Binary Search Trees - Implementation & Analysis",
     timestamp: "2025-10-30T10:20:00Z",
   },
@@ -209,15 +208,39 @@ export const chatMessages: ChatMessage[] = [
   {
     id: "11",
     groupId: "1",
-    sessionId: "22",
-    type: "notification",
+    sessionId: null,
+    type: "discussion",
     senderId: "user4",
     senderName: "Emily Brown",
     senderAvatar: "https://i.pravatar.cc/150?img=45",
     content: "Started a new discussion",
-    notificationType: "discussionStart",
+    discussionId: "disc-2",
     discussionTitle: "Time Complexity Analysis - Big O Notation",
     timestamp: "2025-10-30T14:00:00Z",
+  },
+  {
+    id: "11a",
+    groupId: "1",
+    sessionId: null,
+    type: "notification",
+    senderId: "system",
+    senderName: "System",
+    senderAvatar: null,
+    content: "Alex Kumar was kicked from the group",
+    timestamp: "2025-10-30T14:30:00Z",
+    notificationType: "kicked",
+  },
+  {
+    id: "11b",
+    groupId: "1",
+    sessionId: null,
+    type: "notification",
+    senderId: "system",
+    senderName: "System",
+    senderAvatar: null,
+    content: "Spam User was banned from the group",
+    timestamp: "2025-10-30T14:45:00Z",
+    notificationType: "banned",
   },
   {
     id: "12",

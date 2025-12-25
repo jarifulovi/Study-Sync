@@ -65,13 +65,13 @@ export function NotificationMessage({ content, timestamp }: NotificationMessageP
 
   return (
     <div className="flex items-center justify-center my-4">
-      <div className="bg-gray-100 rounded-full px-4 py-2 flex items-center gap-2">
-        <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-slate-200 rounded-full px-4 py-2 flex items-center gap-2">
+        <svg className="h-4 w-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span className="text-xs text-gray-600">{content}</span>
-        <span className="text-xs text-gray-400">•</span>
-        <span className="text-xs text-gray-400">{formatTime(timestamp)}</span>
+        <span className="text-xs text-slate-700">{content}</span>
+        <span className="text-xs text-slate-500">•</span>
+        <span className="text-xs text-slate-500">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
@@ -149,13 +149,13 @@ export function FileMessage({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </a>
-        <span className="text-xs text-gray-500 mt-1">{formatTime(timestamp)}</span>
+        <span className="text-xs text-slate-500 mt-1">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
 }
 
-interface DiscussionStartNotificationProps {
+interface DiscussionStartMessageProps {
   senderName: string;
   senderAvatar: string | null;
   discussionTitle: string;
@@ -164,19 +164,19 @@ interface DiscussionStartNotificationProps {
   timestamp: string;
 }
 
-export function DiscussionStartNotification({
+export function DiscussionStartMessage({
   senderName,
   senderAvatar,
   discussionTitle,
   discussionId,
   groupId,
   timestamp,
-}: DiscussionStartNotificationProps) {
+}: DiscussionStartMessageProps) {
   return (
     <div className="flex gap-3">
       {/* Avatar */}
       <div className="flex-shrink-0">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white text-xs font-semibold">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-purple-700 text-white text-xs font-semibold">
           {senderAvatar ? (
             <img
               src={senderAvatar}
@@ -191,10 +191,10 @@ export function DiscussionStartNotification({
 
       {/* Discussion Content */}
       <div className="flex flex-col flex-1 max-w-[85%]">
-        <span className="text-xs font-medium text-gray-700 mb-1">
+        <span className="text-xs font-medium text-slate-700 mb-1">
           {senderName}
         </span>
-        <div className="rounded-2xl bg-gradient-to-br from-purple-50 to-blue-50 border border-purple-200 p-4">
+        <div className="rounded-2xl bg-white border border-purple-200 p-4 shadow-sm">
           <div className="flex items-start gap-3 mb-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
               <svg className="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +203,7 @@ export function DiscussionStartNotification({
             </div>
             <div className="flex-1">
               <p className="text-xs text-purple-600 font-medium mb-1">Discussion Started</p>
-              <p className="text-sm font-semibold text-gray-900">{discussionTitle}</p>
+              <p className="text-sm font-semibold text-slate-900">{discussionTitle}</p>
             </div>
           </div>
           <Link
@@ -216,7 +216,7 @@ export function DiscussionStartNotification({
             </svg>
           </Link>
         </div>
-        <span className="text-xs text-gray-500 mt-1">{formatTime(timestamp)}</span>
+        <span className="text-xs text-slate-500 mt-1">{formatTime(timestamp)}</span>
       </div>
     </div>
   );

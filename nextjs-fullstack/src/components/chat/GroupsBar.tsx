@@ -20,7 +20,7 @@ export default function GroupsBar({
 }: GroupsBarProps) {
 
   return (
-    <div className="hidden lg:flex w-64 flex-col bg-slate-700 fixed left-14 top-0 h-screen">
+    <div className="hidden lg:flex w-64 flex-col bg-slate-700 h-full">
       {/* Header */}
       <div className="bg-slate-800/50 px-5 py-4">
         <h2 className="text-sm font-bold text-white uppercase tracking-wide">Groups</h2>

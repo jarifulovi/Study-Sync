@@ -6,7 +6,7 @@ import {
   MessageBubble,
   NotificationMessage,
   FileMessage,
-  DiscussionStartNotification,
+  DiscussionStartMessage,
 } from "./ChatMessageItem";
 import EmptyMessagePanel from "./EmptyMessagePanel";
 
@@ -19,7 +19,7 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
   const currentUserId = "user1";
 
   // Filter out messages with sessionId (discussion chats) - only show group chat messages
-  const groupChatMessages = messages.filter((msg) => msg.type === "notification" || msg.sessionId === null);
+  const groupChatMessages = messages.filter((msg) => msg.type === "discussion" || msg.type === "notification" || msg.sessionId === null);
   
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -28,14 +28,14 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
 
   if (groupChatMessages.length === 0) {
     return (
-      <div className="flex flex-1 flex-col overflow-y-auto bg-gray-50 p-3 sm:p-4">
+      <div className="flex flex-1 flex-col overflow-y-auto bg-slate-100 p-3 sm:p-4">
         <EmptyMessagePanel />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto bg-gray-50 p-3 sm:p-4">
+    <div className="flex flex-1 flex-col overflow-y-auto bg-slate-100 p-3 sm:p-4">
       <div className="flex flex-col gap-4">
         {groupChatMessages.map((message) => {
           const isOwnMessage = message.senderId === currentUserId;
@@ -43,25 +43,23 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
           // Type-safe handling with discriminated union
           switch (message.type) {
             case "notification":
-              // Handle discussionStart notification separately
-              if (message.notificationType === "discussionStart") {
-                return (
-                  <DiscussionStartNotification
-                    key={message.id}
-                    senderName={message.senderName}
-                    senderAvatar={message.senderAvatar}
-                    discussionTitle={message.discussionTitle || ""}
-                    discussionId={message.sessionId || ""}
-                    groupId={message.groupId}
-                    timestamp={message.timestamp}
-                  />
-                );
-              }
-              // Regular notifications (join, leave, roleChange)
               return (
                 <NotificationMessage
                   key={message.id}
                   content={message.content}
+                  timestamp={message.timestamp}
+                />
+              );
+
+            case "discussion":
+              return (
+                <DiscussionStartMessage
+                  key={message.id}
+                  senderName={message.senderName}
+                  senderAvatar={message.senderAvatar}
+                  discussionTitle={message.discussionTitle}
+                  discussionId={message.discussionId}
+                  groupId={message.groupId}
                   timestamp={message.timestamp}
                 />
               );
