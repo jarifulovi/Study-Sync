@@ -23,11 +23,8 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const groupMessages = chatMessages.filter((msg) => msg.groupId === groupId);
 
   return (
-    <div className="flex h-screen">
-      {/* Left Section - Groups Bar */}
+    <div className="flex h-screen bg-slate-800">
       <GroupsBar groups={groupsBar} currentGroupId={groupId} />
-      
-      {/* Right Section - Chat Panel */}
       <ChatPanel selectedGroup={selectedGroup} messages={groupMessages} />
     </div>
   );

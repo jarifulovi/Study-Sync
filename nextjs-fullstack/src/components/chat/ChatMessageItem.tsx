@@ -37,19 +37,19 @@ export function MessageBubble({
 
       {/* Message Content */}
       <div className={`flex flex-col max-w-[85%] sm:max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
-        <span className="text-xs font-medium text-gray-700 mb-1">
+        <span className="text-xs font-medium text-slate-300 mb-1">
           {senderName}
         </span>
         <div
-          className={`rounded-2xl px-4 py-2 ${
+          className={`rounded-2xl px-4 py-3 ${
             isOwnMessage
-              ? "bg-blue-600 text-white rounded-tr-sm"
-              : "bg-white text-gray-900 rounded-tl-sm"
+              ? "bg-slate-700 text-slate-100"
+              : "bg-slate-700/50 text-slate-100"
           }`}
         >
-          <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
+          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">{content}</p>
         </div>
-        <span className="text-xs text-gray-500 mt-1">{formatTime(timestamp)}</span>
+        <span className="text-xs text-slate-500 mt-1">{formatTime(timestamp)}</span>
       </div>
     </div>
   );
@@ -65,12 +65,12 @@ export function NotificationMessage({ content, timestamp }: NotificationMessageP
 
   return (
     <div className="flex items-center justify-center my-4">
-      <div className="bg-slate-200 rounded-full px-4 py-2 flex items-center gap-2">
-        <svg className="h-4 w-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-slate-700/50 rounded-full px-4 py-2 flex items-center gap-2">
+        <svg className="h-4 w-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span className="text-xs text-slate-700">{content}</span>
-        <span className="text-xs text-slate-500">•</span>
+        <span className="text-xs text-slate-200">{content}</span>
+        <span className="text-xs text-slate-400">•</span>
         <span className="text-xs text-slate-500">{formatTime(timestamp)}</span>
       </div>
     </div>
@@ -117,7 +117,7 @@ export function FileMessage({
 
       {/* File Content */}
       <div className={`flex flex-col max-w-[85%] sm:max-w-[70%] ${isOwnMessage ? "items-end" : ""}`}>
-        <span className="text-xs font-medium text-gray-700 mb-1">
+        <span className="text-xs font-medium text-slate-300 mb-1">
           {senderName}
         </span>
         <a
@@ -126,26 +126,26 @@ export function FileMessage({
           rel="noopener noreferrer"
           className={`flex items-center gap-3 rounded-2xl px-4 py-3 transition-colors ${
             isOwnMessage
-              ? "bg-blue-600 hover:bg-blue-700 rounded-tr-sm"
-              : "bg-white hover:bg-gray-50 rounded-tl-sm border border-gray-200"
+              ? "bg-slate-700 hover:bg-slate-600"
+              : "bg-slate-700/50 hover:bg-slate-700"
           }`}
         >
           <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-            isOwnMessage ? "bg-blue-500" : "bg-blue-100"
+            isOwnMessage ? "bg-slate-600" : "bg-slate-600/50"
           }`}>
-            <svg className={`h-5 w-5 ${isOwnMessage ? "text-white" : "text-blue-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`h-5 w-5 ${isOwnMessage ? "text-slate-200" : "text-slate-300"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className={`text-sm font-medium truncate ${isOwnMessage ? "text-white" : "text-gray-900"}`}>
+            <p className={`text-sm font-medium truncate ${isOwnMessage ? "text-slate-100" : "text-slate-100"}`}>
               {fileName}
             </p>
-            <p className={`text-xs ${isOwnMessage ? "text-blue-100" : "text-gray-500"}`}>
+            <p className={`text-xs ${isOwnMessage ? "text-slate-300" : "text-slate-300"}`}>
               {fileSize}
             </p>
           </div>
-          <svg className={`h-5 w-5 flex-shrink-0 ${isOwnMessage ? "text-white" : "text-gray-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className={`h-5 w-5 flex-shrink-0 ${isOwnMessage ? "text-slate-300" : "text-slate-300"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
         </a>
@@ -191,19 +191,19 @@ export function DiscussionStartMessage({
 
       {/* Discussion Content */}
       <div className="flex flex-col flex-1 max-w-[85%]">
-        <span className="text-xs font-medium text-slate-700 mb-1">
+        <span className="text-xs font-medium text-slate-300 mb-1">
           {senderName}
         </span>
-        <div className="rounded-2xl bg-white border border-purple-200 p-4 shadow-sm">
+        <div className="rounded-2xl bg-slate-700/50 p-4">
           <div className="flex items-start gap-3 mb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
-              <svg className="h-5 w-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/20">
+              <svg className="h-5 w-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
             </div>
             <div className="flex-1">
-              <p className="text-xs text-purple-600 font-medium mb-1">Discussion Started</p>
-              <p className="text-sm font-semibold text-slate-900">{discussionTitle}</p>
+              <p className="text-xs text-purple-400 font-medium mb-1">Discussion Started</p>
+              <p className="text-sm font-semibold text-slate-100">{discussionTitle}</p>
             </div>
           </div>
           <Link

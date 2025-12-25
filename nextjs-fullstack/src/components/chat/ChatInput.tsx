@@ -26,7 +26,7 @@ export default function ChatInput({
     <div className="bg-slate-800 px-3 sm:px-6 py-4">
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Attachment Button */}
-        <button className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-700 hover:text-slate-200">
+        <button className="hidden sm:block rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-700 hover:text-slate-200">
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
           </svg>
@@ -39,14 +39,14 @@ export default function ChatInput({
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Type a message..."
-          className="flex-1 rounded-xl border border-slate-600 bg-slate-700 px-4 py-2.5 text-sm text-white placeholder-slate-400 outline-none transition-all focus:border-slate-500 focus:bg-slate-600 focus:ring-2 focus:ring-slate-500/50"
+          className="flex-1 rounded-2xl bg-slate-700 px-4 py-3 text-sm text-slate-100 placeholder-slate-400 outline-none transition-all focus:ring-2 focus:ring-slate-500/50 [&:-webkit-autofill]:bg-slate-700 [&:-webkit-autofill]:text-slate-100"
         />
 
-        {/* Send Button */}
+        {/* Send Button - Hidden on mobile */}
         <button
           onClick={onSendMessage}
           disabled={!inputMessage.trim()}
-          className="rounded-xl bg-emerald-600 px-3 sm:px-4 py-2.5 font-medium text-white transition-all hover:bg-emerald-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          className="hidden sm:block rounded-full bg-slate-600 p-3 text-white transition-all hover:bg-slate-500 active:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
           title="Send message"
         >
           <svg className="h-5 w-5 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@ export default function ChatInput({
           <button
             onClick={() => alert("Start Discussion - Feature Coming Soon!")}
             disabled={!isAdmin}
-            className="hidden sm:block rounded-xl bg-purple-600 px-3 sm:px-4 py-2.5 font-medium text-white transition-all hover:bg-purple-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="rounded-full bg-purple-600 p-3 text-white transition-all hover:bg-purple-700 active:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
             title="Start a discussion"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

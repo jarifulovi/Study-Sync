@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { getInitials } from "@/utils/formatter";
+import ScrollableContainer from "./ScrollableContainer";
 
 interface GroupsBarProps {
   groups: Array<{
@@ -22,21 +23,12 @@ export default function GroupsBar({
   return (
     <div className="hidden lg:flex w-64 flex-col bg-slate-700 h-full">
       {/* Header */}
-      <div className="bg-slate-800/50 px-5 py-4">
+      <div className="bg-slate-800 px-5 py-4">
         <h2 className="text-sm font-bold text-white uppercase tracking-wide">Groups</h2>
       </div>
 
       {/* Group List - Scrollable */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
-        <style jsx>{`
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-        `}</style>
+      <ScrollableContainer className="flex-1 overflow-y-auto overflow-x-hidden">
         {groups.map((group) => (
           <Link
             key={group.id}
@@ -85,7 +77,7 @@ export default function GroupsBar({
             </div>
           </Link>
         ))}
-      </div>
+      </ScrollableContainer>
     </div>
   );
 }

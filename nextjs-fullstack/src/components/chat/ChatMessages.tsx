@@ -9,6 +9,7 @@ import {
   DiscussionStartMessage,
 } from "./ChatMessageItem";
 import EmptyMessagePanel from "./EmptyMessagePanel";
+import ScrollableContainer from "./ScrollableContainer";
 
 interface ChatMessagesProps {
   messages: ChatMessage[];
@@ -28,15 +29,15 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
 
   if (groupChatMessages.length === 0) {
     return (
-      <div className="flex flex-1 flex-col overflow-y-auto bg-slate-100 p-3 sm:p-4">
+      <ScrollableContainer className="flex flex-1 flex-col overflow-y-auto bg-slate-800 p-3 sm:p-4">
         <EmptyMessagePanel />
-      </div>
+      </ScrollableContainer>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto bg-slate-100 p-3 sm:p-4">
-      <div className="flex flex-col gap-4">
+    <ScrollableContainer className="flex flex-1 flex-col overflow-y-auto bg-slate-800 p-3 sm:p-4">
+      <div className="flex flex-col gap-4 text-slate-200">
         {groupChatMessages.map((message) => {
           const isOwnMessage = message.senderId === currentUserId;
 
@@ -93,6 +94,6 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
         })}
         <div ref={messagesEndRef} />
       </div>
-    </div>
+    </ScrollableContainer>
   );
 }
